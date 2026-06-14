@@ -125,44 +125,47 @@ function extractCode(text) {
 }
 
 /* ---- QR + Barcode scanner (html5-qrcode) ---- */
-async function startScanner() {
+function startScanner() {
+  const readerEl = $("reader");
+
   if (!window.Html5Qrcode) {
-    console.error("Scanner library not loaded");
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Scanner library failed to load. Please refresh the page.</p>";
     return;
   }
 
   // Stop existing scanner
   if (scanner) {
-    try { await scanner.stop(); } catch(e) {}
+    try { scanner.stop(); } catch(e) {}
     scanner = null;
   }
 
-  $("reader").innerHTML = "";
+  readerEl.innerHTML = "<p style='text-align:center;padding:40px;'>Starting camera...</p>";
+
   scanner = new Html5Qrcode("reader");
 
-  try {
-    await scanner.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 280, height: 120 } },
-      (text) => {
-        console.log("Scanned:", text);
-        if (navigator.vibrate) navigator.vibrate(100);
-        scanner.stop().then(() => {
-          scanner = null;
-          lookup(extractCode(text));
-        });
-      },
-      () => {}
-    );
-  } catch (err) {
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 100 } },
+    function(decodedText) {
+      console.log("Scanned:", decodedText);
+      if (navigator.vibrate) navigator.vibrate(100);
+      scanner.stop().then(function() {
+        scanner = null;
+        lookup(extractCode(decodedText));
+      });
+    },
+    function(errorMessage) {
+      // Ignore - no code detected in frame
+    }
+  ).catch(function(err) {
     console.error("Camera error:", err);
-    $("hintText").textContent = "Camera error: " + err;
-  }
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera error: " + err + "</p>";
+  });
 }
 
 function stopScanner() {
   if (scanner) {
-    scanner.stop().catch(() => {});
+    try { scanner.stop(); } catch(e) {}
     scanner = null;
   }
 }
@@ -205,7 +208,12 @@ const deepLink = new URLSearchParams(location.search).get("c");
 if (deepLink) {
   lookup(deepLink.trim());
 } else {
-  startScanner();
+  // Wait for page to fully load before starting scanner
+  if (document.readyState === "complete") {
+    startScanner();
+  } else {
+    window.addEventListener("load", startScanner);
+  }
 }
 
 if ("serviceWorker" in navigator) {
