@@ -6,12 +6,10 @@ Implements the core loop from the business plan:
                    ->  return name + local-equivalent explanation + allergens + legal disclaimer
 
 Data sources (business plan 2.2) are abstracted behind the JSON store in /data.
-In production these endpoints would hydrate from GS1 Synkka (primary) and
-Open Food Facts (secondary). The `source` / `verified` fields drive the
-trust badge shown in the UI.
+Falls back to Open Food Facts API for real commercial products.
 
 Run:
-    pip install fastapi uvicorn
+    pip install fastapi uvicorn httpx
     uvicorn app:app --reload --port 8000
 Then open http://localhost:8000
 """
@@ -19,6 +17,7 @@ Then open http://localhost:8000
 import json
 from pathlib import Path
 
+import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -91,6 +90,101 @@ def build_payload(product: dict, lang: str) -> dict:
     }
 
 
+# ---- Open Food Facts Integration ----
+OFF_API_URL = "https://world.openfoodfacts.org/api/v2/product/{barcode}.json"
+
+# Map OFF allergen tags to our allergen keys
+OFF_ALLERGEN_MAP = {
+    "en:gluten": "gluten",
+    "en:milk": "milk",
+    "en:eggs": "eggs",
+    "en:fish": "fish",
+    "en:crustaceans": "crustaceans",
+    "en:molluscs": "molluscs",
+    "en:nuts": "nuts",
+    "en:peanuts": "peanuts",
+    "en:soybeans": "soy",
+    "en:celery": "celery",
+    "en:mustard": "mustard",
+    "en:sesame-seeds": "sesame",
+    "en:sulphur-dioxide-and-sulphites": "sulphites",
+    "en:lupin": "lupin",
+    # Common variations
+    "en:wheat": "gluten",
+    "en:barley": "gluten",
+    "en:oats": "gluten",
+    "en:rye": "gluten",
+    "en:lactose": "lactose",
+}
+
+
+async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
+    """Fetch product from Open Food Facts API."""
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            url = OFF_API_URL.format(barcode=barcode)
+            response = await client.get(url)
+
+            if response.status_code != 200:
+                return None
+
+            data = response.json()
+
+            if data.get("status") != 1 or "product" not in data:
+                return None
+
+            product = data["product"]
+
+            # Extract product name (try localized, fall back to generic)
+            name = (
+                product.get(f"product_name_{lang}") or
+                product.get("product_name") or
+                product.get("product_name_en") or
+                "Unknown Product"
+            )
+
+            # Extract brand
+            brand = product.get("brands", "").split(",")[0].strip() or "Unknown Brand"
+
+            # Extract allergens
+            allergen_tags = product.get("allergens_tags", [])
+            allergens = []
+            seen = set()
+            for tag in allergen_tags:
+                key = OFF_ALLERGEN_MAP.get(tag.lower())
+                if key and key not in seen:
+                    allergens.append(key)
+                    seen.add(key)
+
+            # Extract category
+            categories = product.get("categories", "").split(",")
+            category = categories[0].strip() if categories else ""
+
+            # Build description from ingredients or generic text
+            ingredients = product.get(f"ingredients_text_{lang}") or product.get("ingredients_text") or ""
+            local_equivalent = f"Product from {product.get('countries', 'unknown origin')}."
+            if ingredients:
+                local_equivalent += f" Ingredients: {ingredients[:200]}{'...' if len(ingredients) > 200 else ''}"
+
+            return {
+                "gtin": barcode,
+                "shelfCode": barcode,
+                "lang": lang,
+                "name": name,
+                "localEquivalent": local_equivalent,
+                "usage": "",
+                "brand": brand,
+                "category": category,
+                "allergens": localize_allergens(allergens, lang),
+                "source": "OPEN_FOOD_FACTS",
+                "verified": False,
+                "disclaimer": DISCLAIMER.get(lang, DISCLAIMER[DEFAULT_LANG]),
+            }
+    except Exception as e:
+        print(f"Open Food Facts API error: {e}")
+        return None
+
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "products": len(PRODUCTS), "languages": SUPPORTED_LANGS}
@@ -103,12 +197,21 @@ def list_products(lang: str = Query(DEFAULT_LANG)):
 
 
 @app.get("/api/product/{code}")
-def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
+async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
     lang = normalize_lang(lang)
+
+    # First, check local database
     product = INDEX.get(code.upper()) or INDEX.get(code)
-    if not product:
-        raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
-    return JSONResponse(build_payload(product, lang))
+    if product:
+        return JSONResponse(build_payload(product, lang))
+
+    # If not found locally, try Open Food Facts (for barcodes)
+    if code.isdigit() and len(code) >= 8:
+        off_product = await fetch_from_open_food_facts(code, lang)
+        if off_product:
+            return JSONResponse(off_product)
+
+    raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
 
 
 # Serve the PWA. Mounted last so /api/* routes take precedence.
