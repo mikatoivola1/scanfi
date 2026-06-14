@@ -132,17 +132,14 @@ function showStartButton() {
   const t = UI[lang];
   readerEl.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;">
-      <button onclick="startScanner()" style="padding:1.5rem 3rem;font-size:1.2rem;background:#38ada9;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;">
+      <button id="startScanBtn" style="padding:1.5rem 3rem;font-size:1.2rem;background:#38ada9;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;">
         ${t.startScan}
       </button>
     </div>
   `;
-}
-
-function confirmScannedCode() {
-  if (lastScannedCode) {
-    lookup(extractCode(lastScannedCode));
-  }
+  document.getElementById("startScanBtn").addEventListener("click", function() {
+    startScanner();
+  });
 }
 
 function showScannedCode(code) {
@@ -154,14 +151,24 @@ function showScannedCode(code) {
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:1.5rem;text-align:center;">
       <div style="font-size:0.9rem;color:#636e72;margin-bottom:0.5rem;">${t.codeFound}</div>
       <div style="font-size:1.4rem;font-weight:700;color:#0a3d62;margin-bottom:1.5rem;word-break:break-all;padding:0.5rem;background:#f0f0f0;border-radius:8px;width:100%;">${escapeHtml(code)}</div>
-      <button onclick="confirmScannedCode()" style="padding:1rem 2rem;font-size:1.1rem;background:#27ae60;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;margin-bottom:1rem;width:100%;">
+      <button id="confirmBtn" style="padding:1rem 2rem;font-size:1.1rem;background:#27ae60;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;margin-bottom:1rem;width:100%;">
         ${t.confirm}
       </button>
-      <button onclick="startScanner()" style="padding:0.75rem 1.5rem;font-size:1rem;background:#dfe6e9;color:#2d3436;border:none;border-radius:12px;cursor:pointer;">
+      <button id="scanAgainBtn" style="padding:0.75rem 1.5rem;font-size:1rem;background:#dfe6e9;color:#2d3436;border:none;border-radius:12px;cursor:pointer;">
         ${t.scanAgain}
       </button>
     </div>
   `;
+
+  document.getElementById("confirmBtn").addEventListener("click", function() {
+    if (lastScannedCode) {
+      lookup(extractCode(lastScannedCode));
+    }
+  });
+
+  document.getElementById("scanAgainBtn").addEventListener("click", function() {
+    startScanner();
+  });
 }
 
 function startScanner() {
