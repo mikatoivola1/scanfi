@@ -57,13 +57,21 @@ function buildLangSelect() {
 
 async function lookup(code) {
   $("errorBox").classList.add("hidden");
+  console.log("Looking up code:", code);
   try {
-    const res = await fetch(`/api/product/${encodeURIComponent(code)}?lang=${lang}`);
-    if (!res.ok) throw new Error("notfound");
+    const url = `/api/product/${encodeURIComponent(code)}?lang=${lang}`;
+    console.log("Fetching:", url);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.log("API returned:", res.status);
+      throw new Error("notfound");
+    }
     const data = await res.json();
+    console.log("Product found:", data);
     renderProduct(data);
   } catch (e) {
-    showError(UI[lang].notfound);
+    console.error("Lookup error:", e);
+    showError(UI[lang].notfound + " (" + code + ")");
   }
 }
 
