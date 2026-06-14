@@ -124,55 +124,16 @@ function extractCode(text) {
   }
 }
 
-/* ---- QR + Barcode scanner ---- */
-let videoStream = null;
-let scanInterval = null;
-let nativeDetector = null;
-
-// Try native BarcodeDetector (iOS Safari 15.4+, Chrome)
-async function startNativeScanner() {
-  if (!('BarcodeDetector' in window)) return false;
-
-  try {
-    nativeDetector = new BarcodeDetector({
-      formats: ['qr_code', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39']
-    });
-
-    const video = document.createElement('video');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('autoplay', '');
-    video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-
-    $("reader").innerHTML = '';
-    $("reader").appendChild(video);
-
-    videoStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: 1280, height: 720 }
-    });
-    video.srcObject = videoStream;
-    await video.play();
-
-    scanInterval = setInterval(async () => {
-      try {
-        const codes = await nativeDetector.detect(video);
-        if (codes.length > 0) {
-          if (navigator.vibrate) navigator.vibrate(100);
-          stopScanner();
-          lookup(extractCode(codes[0].rawValue));
-        }
-      } catch (e) {}
-    }, 100);
-
-    return true;
-  } catch (e) {
-    console.log("Native scanner error:", e);
-    return false;
+/* ---- QR + Barcode scanner (html5-qrcode) ---- */
+function startScanner() {
+  if (!window.Html5Qrcode) {
+    console.error("Scanner library not loaded");
+    $("hintText").textContent = UI[lang].manual;
+    return;
   }
-}
 
-function getSupportedFormats() {
-  if (!window.Html5QrcodeSupportedFormats) return undefined;
-  return [
+  // All barcode formats we want to scan
+  const formats = window.Html5QrcodeSupportedFormats ? [
     Html5QrcodeSupportedFormats.QR_CODE,
     Html5QrcodeSupportedFormats.EAN_13,
     Html5QrcodeSupportedFormats.EAN_8,
@@ -180,38 +141,49 @@ function getSupportedFormats() {
     Html5QrcodeSupportedFormats.UPC_E,
     Html5QrcodeSupportedFormats.CODE_128,
     Html5QrcodeSupportedFormats.CODE_39,
-  ];
-}
+    Html5QrcodeSupportedFormats.CODE_93,
+    Html5QrcodeSupportedFormats.ITF,
+  ] : undefined;
 
-async function startScanner() {
-  // Try native first (better on iOS)
-  if (await startNativeScanner()) return;
-
-  // Fallback to html5-qrcode
-  if (!window.Html5Qrcode) {
-    $("hintText").textContent = UI[lang].manual;
-    return;
-  }
-
-  const formats = getSupportedFormats();
   scanner = new Html5Qrcode("reader", formats ? { formatsToSupport: formats } : {});
+
   scanner.start(
     { facingMode: "environment" },
-    { fps: 20, qrbox: (w, h) => ({ width: w * 0.9, height: h * 0.5 }) },
-    (text) => {
-      if (navigator.vibrate) navigator.vibrate(100);
-      lookup(extractCode(text));
+    {
+      fps: 10,
+      qrbox: function(viewfinderWidth, viewfinderHeight) {
+        // Large scanning area for barcodes
+        let width = Math.min(viewfinderWidth * 0.9, 400);
+        let height = Math.min(viewfinderHeight * 0.4, 150);
+        return { width: Math.floor(width), height: Math.floor(height) };
+      },
+      aspectRatio: 1.0,
+      showTorchButtonIfSupported: true,
+      showZoomSliderIfSupported: true,
     },
-    () => {}
-  ).catch(() => {
-    $("hintText").textContent = UI[lang].manual + " (Camera unavailable)";
+    (decodedText, decodedResult) => {
+      console.log("Scanned:", decodedText, decodedResult);
+      if (navigator.vibrate) navigator.vibrate(100);
+      stopScanner();
+      lookup(extractCode(decodedText));
+    },
+    (errorMessage) => {
+      // Silently ignore - no barcode in frame
+    }
+  ).catch((err) => {
+    console.error("Scanner error:", err);
+    $("hintText").textContent = UI[lang].manual + " (Camera error)";
   });
 }
 
 function stopScanner() {
-  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
-  if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
-  if (scanner) { scanner.stop().catch(() => {}); scanner = null; }
+  if (scanner) {
+    scanner.stop().then(() => {
+      scanner = null;
+    }).catch(() => {
+      scanner = null;
+    });
+  }
 }
 
 /* ---- Sample chips (demo convenience; not part of production UX) ---- */
