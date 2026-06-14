@@ -130,6 +130,8 @@ let lastScannedCode = null;
 function showStartButton() {
   const readerEl = $("reader");
   const t = UI[lang];
+  $("scannedResult").classList.add("hidden");
+  readerEl.classList.remove("hidden");
   readerEl.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;">
       <button id="startScanBtn" style="padding:1.5rem 3rem;font-size:1.2rem;background:#38ada9;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;">
@@ -143,37 +145,25 @@ function showStartButton() {
 }
 
 function showScannedCode(code) {
-  const readerEl = $("reader");
   const t = UI[lang];
   lastScannedCode = code;
 
-  readerEl.innerHTML = `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:1.5rem;text-align:center;">
-      <div style="font-size:0.9rem;color:#636e72;margin-bottom:0.5rem;">${t.codeFound}</div>
-      <div style="font-size:1.4rem;font-weight:700;color:#0a3d62;margin-bottom:1.5rem;word-break:break-all;padding:0.5rem;background:#f0f0f0;border-radius:8px;width:100%;">${escapeHtml(code)}</div>
-      <button id="confirmBtn" style="padding:1rem 2rem;font-size:1.1rem;background:#27ae60;color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:600;margin-bottom:1rem;width:100%;">
-        ${t.confirm}
-      </button>
-      <button id="scanAgainBtn" style="padding:0.75rem 1.5rem;font-size:1rem;background:#dfe6e9;color:#2d3436;border:none;border-radius:12px;cursor:pointer;">
-        ${t.scanAgain}
-      </button>
-    </div>
-  `;
+  // Hide camera, show result UI
+  $("reader").classList.add("hidden");
+  $("scannedResult").classList.remove("hidden");
 
-  document.getElementById("confirmBtn").addEventListener("click", function() {
-    if (lastScannedCode) {
-      lookup(extractCode(lastScannedCode));
-    }
-  });
-
-  document.getElementById("scanAgainBtn").addEventListener("click", function() {
-    startScanner();
-  });
+  // Update the UI
+  $("scannedLabel").textContent = t.codeFound;
+  $("scannedCode").textContent = code;
+  $("confirmBtn").textContent = t.confirm;
+  $("scanAgainBtn").textContent = t.scanAgain;
 }
 
 function startScanner() {
   const readerEl = $("reader");
   readerEl.innerHTML = "";
+  readerEl.classList.remove("hidden");
+  $("scannedResult").classList.add("hidden");
 
   // Check for camera support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -262,6 +252,16 @@ $("backBtn").onclick = () => {
   $("productView").classList.add("hidden");
   $("scannerView").classList.remove("hidden");
   showStartButton();
+};
+
+// Scanned code confirmation buttons
+$("confirmBtn").onclick = () => {
+  if (lastScannedCode) {
+    lookup(extractCode(lastScannedCode));
+  }
+};
+$("scanAgainBtn").onclick = () => {
+  startScanner();
 };
 
 buildLangSelect();

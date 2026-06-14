@@ -21,6 +21,15 @@
     <section id="scannerView" class="view">
       <p class="hint" id="hintText">Point your camera at the shelf code</p>
       <div id="reader" class="reader"></div>
+
+      <!-- Scanned code confirmation (hidden by default) -->
+      <div id="scannedResult" class="scanned-result hidden">
+        <div id="scannedLabel" class="scanned-label">Code found:</div>
+        <div id="scannedCode" class="scanned-code"></div>
+        <button id="confirmBtn" class="confirm-btn">Look up this product</button>
+        <button id="scanAgainBtn" class="scan-again-btn">Scan again</button>
+      </div>
+
       <div class="manual">
         <input id="manualCode" type="text" inputmode="text" placeholder="or type a shelf code (e.g. SKF-0001)" />
         <button id="manualBtn">Look up</button>
