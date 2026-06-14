@@ -151,10 +151,11 @@ function showStartButton() {
 }
 
 function showScannedCode(code) {
-  // Put the code in the manual input field and auto-lookup
+  // Put the code in the manual input field and click the lookup button
   const extractedCode = extractCode(code);
   $("manualCode").value = extractedCode;
-  lookup(extractedCode);
+  // Trigger the manual lookup button click (this works reliably)
+  $("manualBtn").click();
 }
 
 function startScanner() {
