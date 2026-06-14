@@ -8,11 +8,11 @@ const LANG_NAMES = { en: "English", de: "Deutsch", fr: "Français", es: "Españo
 
 // UI string table (the app shell itself is localized too, not just product data).
 const UI = {
-  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", contains: "Contains", none: "No major allergens listed", equiv: "What is it?", usage: "How to use", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning", stopScan: "Stop", codeFound: "Code found:", confirm: "Look up this product", scanAgain: "Scan again" },
-  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", contains: "Enthält", none: "Keine relevanten Allergene gelistet", equiv: "Was ist das?", usage: "Verwendung", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten", stopScan: "Stopp", codeFound: "Code gefunden:", confirm: "Produkt nachschlagen", scanAgain: "Erneut scannen" },
-  fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", contains: "Contient", none: "Aucun allergène majeur signalé", equiv: "Qu'est-ce que c'est ?", usage: "Utilisation", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan", stopScan: "Arrêter", codeFound: "Code trouvé :", confirm: "Rechercher ce produit", scanAgain: "Scanner à nouveau" },
-  es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", contains: "Contiene", none: "Sin alérgenos principales listados", equiv: "¿Qué es?", usage: "Cómo usar", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo", stopScan: "Detener", codeFound: "Código encontrado:", confirm: "Buscar este producto", scanAgain: "Escanear de nuevo" },
-  zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", contains: "含有", none: "未列出主要过敏原", equiv: "这是什么？", usage: "食用方法", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描", stopScan: "停止", codeFound: "找到代码：", confirm: "查询此产品", scanAgain: "重新扫描" },
+  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", contains: "Contains", none: "No major allergens listed", equiv: "What is it?", usage: "How to use", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning" },
+  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", contains: "Enthält", none: "Keine relevanten Allergene gelistet", equiv: "Was ist das?", usage: "Verwendung", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten" },
+  fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", contains: "Contient", none: "Aucun allergène majeur signalé", equiv: "Qu'est-ce que c'est ?", usage: "Utilisation", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan" },
+  es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", contains: "Contiene", none: "Sin alérgenos principales listados", equiv: "¿Qué es?", usage: "Cómo usar", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo" },
+  zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", contains: "含有", none: "未列出主要过敏原", equiv: "这是什么？", usage: "食用方法", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描" },
 };
 
 function detectLang() {
@@ -125,12 +125,10 @@ function extractCode(text) {
 }
 
 /* ---- QR + Barcode scanner ---- */
-let lastScannedCode = null;
 
 function showStartButton() {
   const readerEl = $("reader");
   const t = UI[lang];
-  $("scannedResult").classList.add("hidden");
   readerEl.classList.remove("hidden");
   readerEl.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;">
@@ -145,25 +143,16 @@ function showStartButton() {
 }
 
 function showScannedCode(code) {
-  const t = UI[lang];
-  lastScannedCode = code;
-
-  // Hide camera, show result UI
-  $("reader").classList.add("hidden");
-  $("scannedResult").classList.remove("hidden");
-
-  // Update the UI
-  $("scannedLabel").textContent = t.codeFound;
-  $("scannedCode").textContent = code;
-  $("confirmBtn").textContent = t.confirm;
-  $("scanAgainBtn").textContent = t.scanAgain;
+  // Put the code in the manual input field and auto-lookup
+  const extractedCode = extractCode(code);
+  $("manualCode").value = extractedCode;
+  lookup(extractedCode);
 }
 
 function startScanner() {
   const readerEl = $("reader");
   readerEl.innerHTML = "";
   readerEl.classList.remove("hidden");
-  $("scannedResult").classList.add("hidden");
 
   // Check for camera support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -254,15 +243,6 @@ $("backBtn").onclick = () => {
   showStartButton();
 };
 
-// Scanned code confirmation buttons
-$("confirmBtn").onclick = () => {
-  if (lastScannedCode) {
-    lookup(extractCode(lastScannedCode));
-  }
-};
-$("scanAgainBtn").onclick = () => {
-  startScanner();
-};
 
 buildLangSelect();
 applyUiStrings();
