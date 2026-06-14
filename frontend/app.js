@@ -124,48 +124,90 @@ function extractCode(text) {
   }
 }
 
-/* ---- QR + Barcode scanner (html5-qrcode) ---- */
+/* ---- QR + Barcode scanner ---- */
+let videoStream = null;
+let scanTimer = null;
+
 function startScanner() {
   const readerEl = $("reader");
+  readerEl.innerHTML = "";
 
-  if (!window.Html5Qrcode) {
-    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Scanner library failed to load. Please refresh the page.</p>";
+  // Create video element
+  const video = document.createElement("video");
+  video.setAttribute("playsinline", "true");
+  video.setAttribute("autoplay", "true");
+  video.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:8px;";
+  readerEl.appendChild(video);
+
+  // Check for camera support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera not supported on this browser. Please use manual entry.</p>";
     return;
   }
 
-  // Stop existing scanner
-  if (scanner) {
-    try { scanner.stop(); } catch(e) {}
-    scanner = null;
-  }
+  // Request camera
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+  })
+  .then(function(stream) {
+    videoStream = stream;
+    video.srcObject = stream;
+    video.play();
 
-  readerEl.innerHTML = "<p style='text-align:center;padding:40px;'>Starting camera...</p>";
-
-  scanner = new Html5Qrcode("reader");
-
-  scanner.start(
-    { facingMode: "environment" },
-    { fps: 10 },
-    function(decodedText) {
-      console.log("Scanned:", decodedText);
-      if (navigator.vibrate) navigator.vibrate(100);
-      scanner.stop().then(function() {
-        scanner = null;
-        lookup(extractCode(decodedText));
-      });
-    },
-    function(errorMessage) {
-      // Ignore - no code detected in frame
+    // Start scanning frames with html5-qrcode
+    if (window.Html5Qrcode) {
+      scanner = new Html5Qrcode("temp-reader-" + Date.now(), { verbose: false });
+      scanFrames(video);
     }
-  ).catch(function(err) {
+  })
+  .catch(function(err) {
     console.error("Camera error:", err);
-    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera error: " + err + "</p>";
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera access denied. Please allow camera access and refresh.</p>";
   });
 }
 
+function scanFrames(video) {
+  if (!videoStream || !scanner) return;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  scanTimer = setInterval(function() {
+    if (!videoStream) {
+      clearInterval(scanTimer);
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+
+    const imageData = canvas.toDataURL("image/png");
+
+    scanner.scanFile(imageData, false)
+      .then(function(decodedText) {
+        console.log("Scanned:", decodedText);
+        if (navigator.vibrate) navigator.vibrate(100);
+        stopScanner();
+        lookup(extractCode(decodedText));
+      })
+      .catch(function() {
+        // No code found, continue scanning
+      });
+  }, 200);
+}
+
 function stopScanner() {
+  if (scanTimer) {
+    clearInterval(scanTimer);
+    scanTimer = null;
+  }
+  if (videoStream) {
+    videoStream.getTracks().forEach(function(track) { track.stop(); });
+    videoStream = null;
+  }
   if (scanner) {
-    try { scanner.stop(); } catch(e) {}
+    try { scanner.clear(); } catch(e) {}
     scanner = null;
   }
 }
