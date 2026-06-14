@@ -205,8 +205,10 @@ function startScanner() {
     function onScanSuccess(decodedText) {
       console.log("Scanned:", decodedText);
       if (navigator.vibrate) navigator.vibrate(100);
-      stopScanner();
-      showScannedCode(decodedText);
+      // Stop scanner first, THEN show the code (to avoid clear() wiping our HTML)
+      stopScanner(function() {
+        showScannedCode(decodedText);
+      });
     },
     function onScanFailure(error) {
       // Ignore scan failures, keep trying
@@ -217,15 +219,19 @@ function startScanner() {
   });
 }
 
-function stopScanner() {
+function stopScanner(callback) {
   if (scanner) {
-    scanner.stop().then(function() {
-      scanner.clear();
-      scanner = null;
+    var s = scanner;
+    scanner = null;
+    s.stop().then(function() {
+      try { s.clear(); } catch(e) {}
+      if (callback) callback();
     }).catch(function(err) {
       console.error("Stop error:", err);
-      scanner = null;
+      if (callback) callback();
     });
+  } else if (callback) {
+    callback();
   }
 }
 
