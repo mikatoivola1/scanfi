@@ -139,9 +139,8 @@ function startScanner() {
     fps: 5,
     qrbox: 200,
     rememberLastUsedCamera: false,
-    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
     videoConstraints: {
-      facingMode: { exact: "environment" }
+      facingMode: "environment"
     }
   });
 
