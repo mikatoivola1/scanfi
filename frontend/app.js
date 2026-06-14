@@ -125,51 +125,44 @@ function extractCode(text) {
 }
 
 /* ---- QR + Barcode scanner (html5-qrcode) ---- */
-function startScanner() {
-  if (!window.Html5QrcodeScanner) {
+async function startScanner() {
+  if (!window.Html5Qrcode) {
     console.error("Scanner library not loaded");
     return;
   }
 
-  // Clear the reader div
-  const readerDiv = $("reader");
-  readerDiv.innerHTML = "";
+  // Stop existing scanner
+  if (scanner) {
+    try { await scanner.stop(); } catch(e) {}
+    scanner = null;
+  }
 
-  scanner = new Html5QrcodeScanner("reader", {
-    fps: 10,
-    qrbox: { width: 300, height: 150 },
-    rememberLastUsedCamera: false,
-    formatsToSupport: [
-      Html5QrcodeSupportedFormats.QR_CODE,
-      Html5QrcodeSupportedFormats.EAN_13,
-      Html5QrcodeSupportedFormats.EAN_8,
-      Html5QrcodeSupportedFormats.UPC_A,
-      Html5QrcodeSupportedFormats.UPC_E,
-      Html5QrcodeSupportedFormats.CODE_128,
-      Html5QrcodeSupportedFormats.CODE_39
-    ],
-    videoConstraints: {
-      facingMode: "environment"
-    }
-  });
+  $("reader").innerHTML = "";
+  scanner = new Html5Qrcode("reader");
 
-  scanner.render(
-    (decodedText) => {
-      console.log("Scanned:", decodedText);
-      if (navigator.vibrate) navigator.vibrate(100);
-      scanner.clear();
-      scanner = null;
-      lookup(extractCode(decodedText));
-    },
-    (error) => {
-      // Ignore scan errors
-    }
-  );
+  try {
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 280, height: 120 } },
+      (text) => {
+        console.log("Scanned:", text);
+        if (navigator.vibrate) navigator.vibrate(100);
+        scanner.stop().then(() => {
+          scanner = null;
+          lookup(extractCode(text));
+        });
+      },
+      () => {}
+    );
+  } catch (err) {
+    console.error("Camera error:", err);
+    $("hintText").textContent = "Camera error: " + err;
+  }
 }
 
 function stopScanner() {
   if (scanner) {
-    try { scanner.clear(); } catch(e) {}
+    scanner.stop().catch(() => {});
     scanner = null;
   }
 }
