@@ -128,61 +128,41 @@ function extractCode(text) {
 function startScanner() {
   if (!window.Html5Qrcode) {
     console.error("Scanner library not loaded");
-    $("hintText").textContent = UI[lang].manual;
     return;
   }
 
-  // All barcode formats we want to scan
-  const formats = window.Html5QrcodeSupportedFormats ? [
-    Html5QrcodeSupportedFormats.QR_CODE,
-    Html5QrcodeSupportedFormats.EAN_13,
-    Html5QrcodeSupportedFormats.EAN_8,
-    Html5QrcodeSupportedFormats.UPC_A,
-    Html5QrcodeSupportedFormats.UPC_E,
-    Html5QrcodeSupportedFormats.CODE_128,
-    Html5QrcodeSupportedFormats.CODE_39,
-    Html5QrcodeSupportedFormats.CODE_93,
-    Html5QrcodeSupportedFormats.ITF,
-  ] : undefined;
+  // Stop any existing scanner first
+  if (scanner) {
+    try { scanner.stop(); } catch(e) {}
+    scanner = null;
+  }
 
-  scanner = new Html5Qrcode("reader", formats ? { formatsToSupport: formats } : {});
+  scanner = new Html5Qrcode("reader");
 
   scanner.start(
     { facingMode: "environment" },
     {
-      fps: 10,
-      qrbox: function(viewfinderWidth, viewfinderHeight) {
-        // Large scanning area for barcodes
-        let width = Math.min(viewfinderWidth * 0.9, 400);
-        let height = Math.min(viewfinderHeight * 0.4, 150);
-        return { width: Math.floor(width), height: Math.floor(height) };
-      },
-      aspectRatio: 1.0,
-      showTorchButtonIfSupported: true,
-      showZoomSliderIfSupported: true,
+      fps: 5,
+      qrbox: 250
     },
-    (decodedText, decodedResult) => {
-      console.log("Scanned:", decodedText, decodedResult);
+    (decodedText) => {
+      console.log("Scanned:", decodedText);
       if (navigator.vibrate) navigator.vibrate(100);
-      stopScanner();
-      lookup(extractCode(decodedText));
+      scanner.stop().then(() => {
+        scanner = null;
+        lookup(extractCode(decodedText));
+      });
     },
-    (errorMessage) => {
-      // Silently ignore - no barcode in frame
-    }
+    () => {}
   ).catch((err) => {
     console.error("Scanner error:", err);
-    $("hintText").textContent = UI[lang].manual + " (Camera error)";
   });
 }
 
 function stopScanner() {
   if (scanner) {
-    scanner.stop().then(() => {
-      scanner = null;
-    }).catch(() => {
-      scanner = null;
-    });
+    scanner.stop().catch(() => {});
+    scanner = null;
   }
 }
 
