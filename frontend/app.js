@@ -126,42 +126,39 @@ function extractCode(text) {
 
 /* ---- QR + Barcode scanner (html5-qrcode) ---- */
 function startScanner() {
-  if (!window.Html5Qrcode) {
+  if (!window.Html5QrcodeScanner) {
     console.error("Scanner library not loaded");
     return;
   }
 
-  // Stop any existing scanner first
-  if (scanner) {
-    try { scanner.stop(); } catch(e) {}
-    scanner = null;
-  }
+  // Clear the reader div
+  const readerDiv = $("reader");
+  readerDiv.innerHTML = "";
 
-  scanner = new Html5Qrcode("reader");
+  scanner = new Html5QrcodeScanner("reader", {
+    fps: 5,
+    qrbox: 200,
+    rememberLastUsedCamera: true,
+    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+  });
 
-  scanner.start(
-    { facingMode: "environment" },
-    {
-      fps: 5,
-      qrbox: 250
-    },
+  scanner.render(
     (decodedText) => {
       console.log("Scanned:", decodedText);
       if (navigator.vibrate) navigator.vibrate(100);
-      scanner.stop().then(() => {
-        scanner = null;
-        lookup(extractCode(decodedText));
-      });
+      scanner.clear();
+      scanner = null;
+      lookup(extractCode(decodedText));
     },
-    () => {}
-  ).catch((err) => {
-    console.error("Scanner error:", err);
-  });
+    (error) => {
+      // Ignore scan errors
+    }
+  );
 }
 
 function stopScanner() {
   if (scanner) {
-    scanner.stop().catch(() => {});
+    try { scanner.clear(); } catch(e) {}
     scanner = null;
   }
 }
