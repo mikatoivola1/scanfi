@@ -124,9 +124,54 @@ function extractCode(text) {
   }
 }
 
-/* ---- QR + Barcode scanner (html5-qrcode) ---- */
+/* ---- QR + Barcode scanner ---- */
+let videoStream = null;
+let scanInterval = null;
+let nativeDetector = null;
+
+// Try native BarcodeDetector (iOS Safari 15.4+, Chrome)
+async function startNativeScanner() {
+  if (!('BarcodeDetector' in window)) return false;
+
+  try {
+    nativeDetector = new BarcodeDetector({
+      formats: ['qr_code', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39']
+    });
+
+    const video = document.createElement('video');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('autoplay', '');
+    video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+
+    $("reader").innerHTML = '';
+    $("reader").appendChild(video);
+
+    videoStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: 1280, height: 720 }
+    });
+    video.srcObject = videoStream;
+    await video.play();
+
+    scanInterval = setInterval(async () => {
+      try {
+        const codes = await nativeDetector.detect(video);
+        if (codes.length > 0) {
+          if (navigator.vibrate) navigator.vibrate(100);
+          stopScanner();
+          lookup(extractCode(codes[0].rawValue));
+        }
+      } catch (e) {}
+    }, 100);
+
+    return true;
+  } catch (e) {
+    console.log("Native scanner error:", e);
+    return false;
+  }
+}
+
 function getSupportedFormats() {
-  if (!window.Html5QrcodeSupportedFormats) return undefined; // Let library use defaults
+  if (!window.Html5QrcodeSupportedFormats) return undefined;
   return [
     Html5QrcodeSupportedFormats.QR_CODE,
     Html5QrcodeSupportedFormats.EAN_13,
@@ -138,55 +183,35 @@ function getSupportedFormats() {
   ];
 }
 
-function startScanner() {
+async function startScanner() {
+  // Try native first (better on iOS)
+  if (await startNativeScanner()) return;
+
+  // Fallback to html5-qrcode
   if (!window.Html5Qrcode) {
-    console.error("Html5Qrcode library not loaded");
     $("hintText").textContent = UI[lang].manual;
     return;
   }
 
   const formats = getSupportedFormats();
-  const config = formats ? { formatsToSupport: formats } : {};
-
-  scanner = new Html5Qrcode("reader", config);
-  scanner
-    .start(
-      { facingMode: "environment" },
-      {
-        fps: 15,
-        qrbox: function(viewfinderWidth, viewfinderHeight) {
-          // Use 80% of the viewfinder for scanning - better for barcodes
-          return {
-            width: Math.floor(viewfinderWidth * 0.85),
-            height: Math.floor(viewfinderHeight * 0.6)
-          };
-        },
-        aspectRatio: 1.5,
-        disableFlip: false,
-        experimentalFeatures: {
-          useBarCodeDetectorIfSupported: true
-        }
-      },
-      (decodedText) => {
-        console.log("Scanned:", decodedText);
-        // Vibrate on success if supported
-        if (navigator.vibrate) navigator.vibrate(100);
-        lookup(extractCode(decodedText));
-      },
-      (errorMessage) => {
-        // Ignore scan errors (no code in frame)
-      }
-    )
-    .catch((err) => {
-      console.error("Camera error:", err);
-      $("hintText").textContent = UI[lang].manual + " (Camera unavailable)";
-    });
+  scanner = new Html5Qrcode("reader", formats ? { formatsToSupport: formats } : {});
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 20, qrbox: (w, h) => ({ width: w * 0.9, height: h * 0.5 }) },
+    (text) => {
+      if (navigator.vibrate) navigator.vibrate(100);
+      lookup(extractCode(text));
+    },
+    () => {}
+  ).catch(() => {
+    $("hintText").textContent = UI[lang].manual + " (Camera unavailable)";
+  });
 }
 
 function stopScanner() {
-  if (scanner) {
-    scanner.stop().catch(() => {}).finally(() => { scanner = null; });
-  }
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
+  if (scanner) { scanner.stop().catch(() => {}); scanner = null; }
 }
 
 /* ---- Sample chips (demo convenience; not part of production UX) ---- */
