@@ -125,19 +125,10 @@ function extractCode(text) {
 }
 
 /* ---- QR + Barcode scanner ---- */
-let videoStream = null;
-let scanTimer = null;
 
 function startScanner() {
   const readerEl = $("reader");
   readerEl.innerHTML = "";
-
-  // Create video element
-  const video = document.createElement("video");
-  video.setAttribute("playsinline", "true");
-  video.setAttribute("autoplay", "true");
-  video.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:8px;";
-  readerEl.appendChild(video);
 
   // Check for camera support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -145,73 +136,51 @@ function startScanner() {
     return;
   }
 
-  // Request camera
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
-  })
-  .then(function(stream) {
-    videoStream = stream;
-    video.srcObject = stream;
-    video.play();
+  // Use Html5Qrcode's built-in camera support
+  scanner = new Html5Qrcode("reader");
 
-    // Start scanning frames with html5-qrcode
-    if (window.Html5Qrcode) {
-      scanner = new Html5Qrcode("temp-reader-" + Date.now(), { verbose: false });
-      scanFrames(video);
+  const config = {
+    fps: 10,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0,
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.QR_CODE,
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.EAN_8,
+      Html5QrcodeSupportedFormats.CODE_128,
+      Html5QrcodeSupportedFormats.CODE_39,
+      Html5QrcodeSupportedFormats.UPC_A,
+      Html5QrcodeSupportedFormats.UPC_E
+    ]
+  };
+
+  scanner.start(
+    { facingMode: "environment" },
+    config,
+    function onScanSuccess(decodedText) {
+      console.log("Scanned:", decodedText);
+      if (navigator.vibrate) navigator.vibrate(100);
+      stopScanner();
+      lookup(extractCode(decodedText));
+    },
+    function onScanFailure(error) {
+      // Ignore scan failures, keep trying
     }
-  })
-  .catch(function(err) {
+  ).catch(function(err) {
     console.error("Camera error:", err);
-    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera access denied. Please allow camera access and refresh.</p>";
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera access denied. Please allow camera access and refresh, or use manual entry below.</p>";
   });
 }
 
-function scanFrames(video) {
-  if (!videoStream || !scanner) return;
-
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  scanTimer = setInterval(function() {
-    if (!videoStream) {
-      clearInterval(scanTimer);
-      return;
-    }
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
-
-    canvas.toBlob(function(blob) {
-      if (!blob || !scanner) return;
-      const file = new File([blob], "frame.png", { type: "image/png" });
-
-      scanner.scanFile(file, false)
-        .then(function(decodedText) {
-          console.log("Scanned:", decodedText);
-          if (navigator.vibrate) navigator.vibrate(100);
-          stopScanner();
-          lookup(extractCode(decodedText));
-        })
-        .catch(function() {
-          // No code found, continue scanning
-        });
-    }, "image/png");
-  }, 250);
-}
-
 function stopScanner() {
-  if (scanTimer) {
-    clearInterval(scanTimer);
-    scanTimer = null;
-  }
-  if (videoStream) {
-    videoStream.getTracks().forEach(function(track) { track.stop(); });
-    videoStream = null;
-  }
   if (scanner) {
-    try { scanner.clear(); } catch(e) {}
-    scanner = null;
+    scanner.stop().then(function() {
+      scanner.clear();
+      scanner = null;
+    }).catch(function(err) {
+      console.error("Stop error:", err);
+      scanner = null;
+    });
   }
 }
 
