@@ -1,0 +1,2 @@
+# QR code generation dependencies
+qrcode[pil]>=7.4.0

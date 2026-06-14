@@ -1,0 +1,351 @@
+/* ScanFi PWA Styles */
+:root {
+  --primary: #0a3d62;
+  --primary-light: #1e5f8a;
+  --accent: #38ada9;
+  --bg: #f8f9fa;
+  --card-bg: #ffffff;
+  --text: #2d3436;
+  --text-muted: #636e72;
+  --border: #dfe6e9;
+  --verified: #27ae60;
+  --community: #f39c12;
+  --error: #e74c3c;
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--primary);
+  color: #fff;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+.lang-select {
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary-light);
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* Main app */
+#app {
+  padding: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.view {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Scanner view */
+.hint {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.reader {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-height: 350px;
+  margin: 0 auto 1.5rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+  border: 3px solid var(--accent);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Make camera video fill the reader area */
+.reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  display: block;
+}
+
+/* Style the scan region overlay */
+.reader #qr-shaded-region {
+  border-color: var(--accent) !important;
+}
+
+/* Hide the default library UI elements we don't need */
+.reader img[alt="Info icon"] {
+  display: none !important;
+}
+
+/* Scanning animation */
+@keyframes scan-line {
+  0% { top: 0; }
+  50% { top: calc(100% - 4px); }
+  100% { top: 0; }
+}
+
+.reader::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  animation: scan-line 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.manual {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.manual input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+}
+
+.manual button {
+  padding: 0.75rem 1.25rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.manual button:hover {
+  background: var(--primary-light);
+}
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.sample-chip {
+  padding: 0.5rem 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sample-chip:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Product view */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.badge.verified {
+  background: #e8f5e9;
+  color: var(--verified);
+}
+
+.badge.community {
+  background: #fff3e0;
+  color: var(--community);
+}
+
+.card h1 {
+  font-size: 1.35rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.brand-line {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.equiv, .usage {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.allergens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.allergen-chip {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  background: #ffebee;
+  color: var(--error);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.allergen-none {
+  color: var(--verified);
+  font-size: 0.95rem;
+}
+
+.disclaimer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Error box */
+.error {
+  background: #ffebee;
+  color: var(--error);
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* PWA install banner (optional future use) */
+@media (display-mode: standalone) {
+  .topbar {
+    padding-top: env(safe-area-inset-top, 0.75rem);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 600px) {
+  #app {
+    padding: 0.5rem;
+  }
+
+  .reader {
+    min-height: 55vh;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .hint {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+  }
+
+  .manual {
+    flex-direction: column;
+  }
+
+  .manual button {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .samples {
+    margin-top: 0.5rem;
+  }
+
+  .sample-chip {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}

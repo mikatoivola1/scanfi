@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a3d62" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>ScanFi</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Scan<span>Fi</span></div>
+    <select id="langSelect" class="lang-select" aria-label="Language"></select>
+  </header>
+
+  <main id="app">
+    <!-- Scanner view -->
+    <section id="scannerView" class="view">
+      <p class="hint" id="hintText">Point your camera at the shelf code</p>
+      <div id="reader" class="reader"></div>
+      <div class="manual">
+        <input id="manualCode" type="text" inputmode="text" placeholder="or type a shelf code (e.g. SKF-0001)" />
+        <button id="manualBtn">Look up</button>
+      </div>
+      <div class="samples" id="samples"></div>
+    </section>
+
+    <!-- Product view -->
+    <section id="productView" class="view hidden">
+      <button id="backBtn" class="back">&larr; <span id="backLabel">Scan another</span></button>
+      <div class="card" id="productCard"></div>
+    </section>
+
+    <div id="errorBox" class="error hidden"></div>
+  </main>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

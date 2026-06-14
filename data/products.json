@@ -1,0 +1,90 @@
+{
+  "_comment": "Sample product store. In production this is hydrated from GS1 Synkka (primary, legally authoritative allergen data) and Open Food Facts (secondary), per business plan section 2.2. 'source' records provenance and 'verified' drives the trust badge shown in the UI. 'localEquivalent' is the AI 'Local Equivalent Matching' output (section 2.3): not a dictionary translation, but a culturally-aware explanation + usage context.",
+  "products": [
+    {
+      "gtin": "6411401012345",
+      "shelfCode": "SKF-0001",
+      "source": "GS1_SYNKKA",
+      "verified": true,
+      "brand": "Juustoportti",
+      "category": "dairy",
+      "name_fi": "Leipäjuusto",
+      "allergens": ["milk", "lactose"],
+      "translations": {
+        "en": { "name": "Leipäjuusto — Finnish Squeaky Cheese", "localEquivalent": "A mild, firm baked cheese, similar in texture to halloumi. It squeaks against your teeth, hence the nickname.", "usage": "Warm it gently in a pan or microwave and serve with cloudberry jam (lakka). Also good with coffee." },
+        "de": { "name": "Leipäjuusto — Finnischer Quietschkäse", "localEquivalent": "Ein milder, fester Backkäse, ähnlich wie Halloumi. Er quietscht beim Kauen zwischen den Zähnen.", "usage": "In der Pfanne leicht erwärmen und mit Moltebeerenmarmelade (lakka) servieren. Passt auch zum Kaffee." },
+        "fr": { "name": "Leipäjuusto — Fromage qui couine", "localEquivalent": "Un fromage cuit ferme et doux, proche du halloumi. Il couine sous la dent, d'où son surnom.", "usage": "Réchauffez-le doucement à la poêle et servez avec de la confiture de mûres arctiques (lakka)." },
+        "es": { "name": "Leipäjuusto — Queso chirriante finlandés", "localEquivalent": "Un queso horneado firme y suave, parecido al halloumi. Cruje al masticarlo.", "usage": "Caliéntalo suavemente en la sartén y sírvelo con mermelada de mora ártica (lakka)." },
+        "zh": { "name": "Leipäjuusto — 芬兰吱吱奶酪", "localEquivalent": "一种温和、紧实的烤奶酪，口感类似哈罗米芝士，咀嚼时会发出吱吱声。", "usage": "用平底锅轻微加热，搭配云莓果酱（lakka）食用，也可佐咖啡。" }
+      }
+    },
+    {
+      "gtin": "6408430000018",
+      "shelfCode": "SKF-0002",
+      "source": "GS1_SYNKKA",
+      "verified": true,
+      "brand": "Fazer",
+      "category": "confectionery",
+      "name_fi": "Fazerin Sininen maitosuklaa",
+      "allergens": ["milk", "lactose", "soy", "nuts"],
+      "translations": {
+        "en": { "name": "Fazer Blue Milk Chocolate", "localEquivalent": "Finland's most iconic milk chocolate, a national favourite since 1922. Smooth and sweet.", "usage": "Eat as is. A common gift and souvenir from Finland. May contain traces of tree nuts." },
+        "de": { "name": "Fazer Blau Milchschokolade", "localEquivalent": "Finnlands bekannteste Milchschokolade, seit 1922 ein Nationalfavorit. Cremig und süß.", "usage": "Pur genießen. Ein beliebtes Mitbringsel aus Finnland. Kann Spuren von Schalenfrüchten enthalten." },
+        "fr": { "name": "Chocolat au lait Fazer Bleu", "localEquivalent": "Le chocolat au lait le plus emblématique de Finlande, favori national depuis 1922.", "usage": "À déguster tel quel. Souvenir populaire de Finlande. Peut contenir des traces de fruits à coque." },
+        "es": { "name": "Chocolate con leche Fazer Azul", "localEquivalent": "El chocolate con leche más icónico de Finlandia, favorito nacional desde 1922.", "usage": "Cómelo tal cual. Un recuerdo popular de Finlandia. Puede contener trazas de frutos de cáscara." },
+        "zh": { "name": "Fazer 蓝牌牛奶巧克力", "localEquivalent": "芬兰最具代表性的牛奶巧克力，自1922年起备受国民喜爱，口感顺滑香甜。", "usage": "可直接食用，是来自芬兰的热门伴手礼。可能含有微量坚果。" }
+      }
+    },
+    {
+      "gtin": "6437002000027",
+      "shelfCode": "SKF-0003",
+      "source": "OPEN_FOOD_FACTS",
+      "verified": false,
+      "brand": "Paulig",
+      "category": "beverages",
+      "name_fi": "Paulig Juhla Mokka kahvi",
+      "allergens": [],
+      "translations": {
+        "en": { "name": "Paulig Juhla Mokka Coffee", "localEquivalent": "The best-selling ground coffee in Finland — a light-medium Nordic roast. Finns drink more coffee per capita than almost any nation.", "usage": "Brew in a drip filter machine. Traditionally served with a sweet bun (pulla)." },
+        "de": { "name": "Paulig Juhla Mokka Kaffee", "localEquivalent": "Der meistverkaufte gemahlene Kaffee Finnlands — eine helle bis mittlere nordische Röstung.", "usage": "In der Filtermaschine aufbrühen. Traditionell mit einem süßen Hefegebäck (pulla) serviert." },
+        "fr": { "name": "Café Paulig Juhla Mokka", "localEquivalent": "Le café moulu le plus vendu en Finlande — une torréfaction nordique légère à moyenne.", "usage": "À préparer en cafetière filtre. Servi traditionnellement avec une brioche sucrée (pulla)." },
+        "es": { "name": "Café Paulig Juhla Mokka", "localEquivalent": "El café molido más vendido en Finlandia — un tueste nórdico ligero-medio.", "usage": "Prepáralo en cafetera de filtro. Se sirve tradicionalmente con un bollo dulce (pulla)." },
+        "zh": { "name": "Paulig Juhla Mokka 咖啡", "localEquivalent": "芬兰最畅销的研磨咖啡——北欧式中浅烘焙。芬兰人均咖啡消费量居世界前列。", "usage": "使用滴滤咖啡机冲泡，传统上搭配甜面包（pulla）饮用。" }
+      }
+    },
+    {
+      "gtin": "6411300000034",
+      "shelfCode": "SKF-0004",
+      "source": "GS1_SYNKKA",
+      "verified": true,
+      "brand": "Atria",
+      "category": "meat",
+      "name_fi": "Poronkäristys (pakaste)",
+      "allergens": [],
+      "translations": {
+        "en": { "name": "Sautéed Reindeer (frozen)", "localEquivalent": "Thinly shaved reindeer meat, a traditional Lappish dish. Lean, gamey and rich in iron.", "usage": "Fry slowly in butter, then simmer. Served with mashed potato and lingonberry jam. No common allergens, but always check the pack." },
+        "de": { "name": "Geschnetzeltes Rentier (tiefgekühlt)", "localEquivalent": "Dünn gehobeltes Rentierfleisch, ein traditionelles lappländisches Gericht. Mager und kräftig im Geschmack.", "usage": "Langsam in Butter anbraten, dann schmoren. Mit Kartoffelpüree und Preiselbeermarmelade servieren." },
+        "fr": { "name": "Renne sauté (surgelé)", "localEquivalent": "Fines lamelles de viande de renne, un plat traditionnel de Laponie. Maigre et goûteux.", "usage": "Faites revenir lentement au beurre, puis mijoter. Servi avec purée et confiture d'airelles." },
+        "es": { "name": "Reno salteado (congelado)", "localEquivalent": "Carne de reno en finas láminas, un plato tradicional de Laponia. Magra y sabrosa.", "usage": "Sofríe lentamente en mantequilla y luego guisa. Se sirve con puré y mermelada de arándano rojo." },
+        "zh": { "name": "煎驯鹿肉（冷冻）", "localEquivalent": "切成薄片的驯鹿肉，是拉普兰传统菜肴，肉质精瘦、野味浓郁、富含铁质。", "usage": "用黄油慢煎后炖煮，搭配土豆泥和越橘酱食用。" }
+      }
+    },
+    {
+      "gtin": "6411200000041",
+      "shelfCode": "SKF-0005",
+      "source": "GS1_SYNKKA",
+      "verified": true,
+      "brand": "Vaasan",
+      "category": "bakery",
+      "name_fi": "Ruisleipä (ruispalat)",
+      "allergens": ["gluten"],
+      "translations": {
+        "en": { "name": "Finnish Rye Bread", "localEquivalent": "Dense, dark, sour rye bread — a Finnish staple eaten daily. Strong, tangy flavour quite different from soft wheat bread.", "usage": "Top with butter, cheese or cold cuts. Contains gluten (rye)." },
+        "de": { "name": "Finnisches Roggenbrot", "localEquivalent": "Dichtes, dunkles, säuerliches Roggenbrot — ein finnisches Grundnahrungsmittel.", "usage": "Mit Butter, Käse oder Aufschnitt belegen. Enthält Gluten (Roggen)." },
+        "fr": { "name": "Pain de seigle finlandais", "localEquivalent": "Pain de seigle dense, foncé et acidulé — un aliment de base en Finlande.", "usage": "Garnir de beurre, fromage ou charcuterie. Contient du gluten (seigle)." },
+        "es": { "name": "Pan de centeno finlandés", "localEquivalent": "Pan de centeno denso, oscuro y ácido — un alimento básico en Finlandia.", "usage": "Úntalo con mantequilla, queso o fiambre. Contiene gluten (centeno)." },
+        "zh": { "name": "芬兰黑麦面包", "localEquivalent": "口感扎实、色泽深、带酸味的黑麦面包，是芬兰人的日常主食，风味浓郁。", "usage": "可涂抹黄油、奶酪或夹冷切肉食用。含麸质（黑麦）。" }
+      }
+    }
+  ]
+}

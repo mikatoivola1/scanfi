@@ -1,0 +1,20 @@
+{
+  "_comment": "Master allergen list. Keys are stable internal IDs (EU FIC Annex II 14 major allergens). Labels are localized for the supported launch languages from the business plan: en, de, fr, es, zh.",
+  "allergens": {
+    "gluten":     { "en": "Gluten (cereals)", "de": "Gluten (Getreide)", "fr": "Gluten (céréales)", "es": "Gluten (cereales)", "zh": "麸质（谷物）" },
+    "crustaceans":{ "en": "Crustaceans", "de": "Krebstiere", "fr": "Crustacés", "es": "Crustáceos", "zh": "甲壳类" },
+    "eggs":       { "en": "Eggs", "de": "Eier", "fr": "Œufs", "es": "Huevos", "zh": "蛋类" },
+    "fish":       { "en": "Fish", "de": "Fisch", "fr": "Poisson", "es": "Pescado", "zh": "鱼类" },
+    "peanuts":    { "en": "Peanuts", "de": "Erdnüsse", "fr": "Arachides", "es": "Cacahuetes", "zh": "花生" },
+    "soy":        { "en": "Soybeans", "de": "Soja", "fr": "Soja", "es": "Soja", "zh": "大豆" },
+    "milk":       { "en": "Milk", "de": "Milch", "fr": "Lait", "es": "Leche", "zh": "牛奶" },
+    "lactose":    { "en": "Lactose", "de": "Laktose", "fr": "Lactose", "es": "Lactosa", "zh": "乳糖" },
+    "nuts":       { "en": "Tree nuts", "de": "Schalenfrüchte", "fr": "Fruits à coque", "es": "Frutos de cáscara", "zh": "坚果" },
+    "celery":     { "en": "Celery", "de": "Sellerie", "fr": "Céleri", "es": "Apio", "zh": "芹菜" },
+    "mustard":    { "en": "Mustard", "de": "Senf", "fr": "Moutarde", "es": "Mostaza", "zh": "芥末" },
+    "sesame":     { "en": "Sesame", "de": "Sesam", "fr": "Sésame", "es": "Sésamo", "zh": "芝麻" },
+    "sulphites":  { "en": "Sulphites", "de": "Sulfite", "fr": "Sulfites", "es": "Sulfitos", "zh": "亚硫酸盐" },
+    "lupin":      { "en": "Lupin", "de": "Lupinen", "fr": "Lupin", "es": "Altramuces", "zh": "羽扇豆" },
+    "molluscs":   { "en": "Molluscs", "de": "Weichtiere", "fr": "Mollusques", "es": "Moluscos", "zh": "软体动物" }
+  }
+}
