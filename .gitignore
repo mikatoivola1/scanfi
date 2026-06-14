@@ -40,3 +40,6 @@ extracted_files/
 # Local files
 certs/
 scanfi_link.png
+node_modules/
+nul
+*.bak

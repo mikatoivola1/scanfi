@@ -182,19 +182,22 @@ function scanFrames(video) {
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0);
 
-    const imageData = canvas.toDataURL("image/png");
+    canvas.toBlob(function(blob) {
+      if (!blob || !scanner) return;
+      const file = new File([blob], "frame.png", { type: "image/png" });
 
-    scanner.scanFile(imageData, false)
-      .then(function(decodedText) {
-        console.log("Scanned:", decodedText);
-        if (navigator.vibrate) navigator.vibrate(100);
-        stopScanner();
-        lookup(extractCode(decodedText));
-      })
-      .catch(function() {
-        // No code found, continue scanning
-      });
-  }, 200);
+      scanner.scanFile(file, false)
+        .then(function(decodedText) {
+          console.log("Scanned:", decodedText);
+          if (navigator.vibrate) navigator.vibrate(100);
+          stopScanner();
+          lookup(extractCode(decodedText));
+        })
+        .catch(function() {
+          // No code found, continue scanning
+        });
+    }, "image/png");
+  }, 250);
 }
 
 function stopScanner() {
