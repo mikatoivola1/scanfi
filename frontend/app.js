@@ -138,8 +138,11 @@ function startScanner() {
   scanner = new Html5QrcodeScanner("reader", {
     fps: 5,
     qrbox: 200,
-    rememberLastUsedCamera: true,
-    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+    rememberLastUsedCamera: false,
+    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+    videoConstraints: {
+      facingMode: { exact: "environment" }
+    }
   });
 
   scanner.render(
