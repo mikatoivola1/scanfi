@@ -153,9 +153,15 @@ function showStartButton() {
 function showScannedCode(code) {
   // Put the code in the manual input field and click the lookup button
   const extractedCode = extractCode(code);
+  console.log("Scanned code:", code);
+  console.log("Extracted code:", extractedCode);
   $("manualCode").value = extractedCode;
-  // Trigger the manual lookup button click (this works reliably)
-  $("manualBtn").click();
+  // Small delay to ensure DOM updates, then trigger lookup
+  setTimeout(function() {
+    console.log("Input value:", $("manualCode").value);
+    console.log("Clicking lookup button...");
+    $("manualBtn").click();
+  }, 100);
 }
 
 function startScanner() {
