@@ -161,16 +161,19 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
 
             product = data["product"]
 
-            # Extract product name with proper language fallback
-            # Priority: requested lang -> English -> generic -> any available
+            # Extract product name - prioritize user's language, then English
             name = (
                 product.get(f"product_name_{lang}") or
                 product.get("product_name_en") or
                 product.get("product_name") or
-                product.get("generic_name_en") or
-                product.get("generic_name") or
                 "Unknown Product"
             )
+
+            # If name is still in Finnish but user wants another language, note it
+            original_name = product.get("product_name", "")
+            if name == original_name and lang != "fi" and original_name:
+                # Product name not translated, keep original but we'll translate description
+                pass
 
             # Extract brand
             brand = product.get("brands", "").split(",")[0].strip() or "Unknown Brand"
@@ -185,18 +188,23 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
                     allergens.append(key)
                     seen.add(key)
 
-            # Extract category (get first category, clean it up)
-            categories_raw = product.get("categories", "") or product.get(f"categories_{lang}", "")
-            categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
-            category = categories[0] if categories else ""
-
-            # Build a useful description
+            # Build a useful description - prioritize user's language
             generic_name = (
                 product.get(f"generic_name_{lang}") or
                 product.get("generic_name_en") or
                 product.get("generic_name") or
                 ""
             )
+
+            # Get categories in user's language if available
+            categories_raw = (
+                product.get(f"categories_{lang}") or
+                product.get("categories_en") or
+                product.get("categories") or
+                ""
+            )
+            categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
+            category = categories[0] if categories else ""
 
             # Get quantity/serving info
             quantity = product.get("quantity", "")
