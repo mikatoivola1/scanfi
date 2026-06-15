@@ -69,21 +69,13 @@ function buildLangSelect() {
 
 async function lookup(code) {
   $("errorBox").classList.add("hidden");
-  console.log("Looking up code:", code);
   try {
-    const url = `/api/product/${encodeURIComponent(code)}?lang=${lang}`;
-    console.log("Fetching:", url);
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.log("API returned:", res.status);
-      throw new Error("notfound");
-    }
+    const res = await fetch(`/api/product/${encodeURIComponent(code)}?lang=${lang}`);
+    if (!res.ok) throw new Error("notfound");
     const data = await res.json();
-    console.log("Product found:", data);
     renderProduct(data);
   } catch (e) {
-    console.error("Lookup error:", e);
-    showError(UI[lang].notfound + " (" + code + ")");
+    showError(UI[lang].notfound);
   }
 }
 
@@ -165,17 +157,14 @@ function showStartButton() {
 function showScannedCode(code) {
   // Put the code in the manual input field and trigger lookup
   const extractedCode = extractCode(code);
-  console.log("Scanned code:", code);
-  console.log("Extracted code:", extractedCode);
   $("manualCode").value = extractedCode;
-  // Call lookup directly after a small delay
+  // Call lookup after a small delay
   setTimeout(function() {
     var codeToLookup = $("manualCode").value.trim();
-    console.log("Looking up:", codeToLookup);
     if (codeToLookup) {
       lookup(codeToLookup);
     }
-  }, 200);
+  }, 100);
 }
 
 function startScanner() {

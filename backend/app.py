@@ -149,9 +149,7 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
             # Use language-specific subdomain
             off_lang = OFF_LANG_MAP.get(lang, "world")
             url = OFF_API_URL.format(lang=off_lang, barcode=barcode)
-            print(f"[DEBUG] Fetching from OFF: {url}")
             response = await client.get(url)
-            print(f"[DEBUG] OFF response status: {response.status_code}")
 
             if response.status_code != 200:
                 return None
@@ -258,26 +256,19 @@ def list_products(lang: str = Query(DEFAULT_LANG)):
 async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
     lang = normalize_lang(lang)
     code = code.strip()
-    print(f"[DEBUG] Looking up code: '{code}', lang: {lang}")
 
     # First, check local database
     product = INDEX.get(code.upper()) or INDEX.get(code)
     if product:
-        print(f"[DEBUG] Found in local database")
         return JSONResponse(build_payload(product, lang))
 
     # If not found locally, try Open Food Facts (for barcodes)
-    # Clean code: remove any non-digit characters
     clean_code = ''.join(c for c in code if c.isdigit())
-    print(f"[DEBUG] Clean code for OFF: '{clean_code}'")
 
     if len(clean_code) >= 8:
-        print(f"[DEBUG] Querying Open Food Facts...")
         off_product = await fetch_from_open_food_facts(clean_code, lang)
         if off_product:
-            print(f"[DEBUG] Found in Open Food Facts: {off_product.get('name')}")
             return JSONResponse(off_product)
-        print(f"[DEBUG] Not found in Open Food Facts")
 
     raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
 
