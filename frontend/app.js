@@ -151,17 +151,19 @@ function showStartButton() {
 }
 
 function showScannedCode(code) {
-  // Put the code in the manual input field and click the lookup button
+  // Put the code in the manual input field and trigger lookup
   const extractedCode = extractCode(code);
   console.log("Scanned code:", code);
   console.log("Extracted code:", extractedCode);
   $("manualCode").value = extractedCode;
-  // Small delay to ensure DOM updates, then trigger lookup
+  // Call lookup directly after a small delay
   setTimeout(function() {
-    console.log("Input value:", $("manualCode").value);
-    console.log("Clicking lookup button...");
-    $("manualBtn").click();
-  }, 100);
+    var codeToLookup = $("manualCode").value.trim();
+    console.log("Looking up:", codeToLookup);
+    if (codeToLookup) {
+      lookup(codeToLookup);
+    }
+  }, 200);
 }
 
 function startScanner() {
