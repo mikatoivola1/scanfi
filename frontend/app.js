@@ -182,9 +182,13 @@ function startScanner() {
   scanner = new Html5Qrcode("reader");
 
   const config = {
-    fps: 10,
-    qrbox: { width: 250, height: 250 },
-    aspectRatio: 1.0,
+    fps: 15,
+    qrbox: function(viewfinderWidth, viewfinderHeight) {
+      // Use 80% of the smaller dimension for scanning area
+      let minDimension = Math.min(viewfinderWidth, viewfinderHeight);
+      let qrboxSize = Math.floor(minDimension * 0.8);
+      return { width: qrboxSize, height: qrboxSize };
+    },
     formatsToSupport: [
       Html5QrcodeSupportedFormats.QR_CODE,
       Html5QrcodeSupportedFormats.EAN_13,
