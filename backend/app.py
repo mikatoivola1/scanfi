@@ -187,15 +187,42 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
                     allergens.append(key)
                     seen.add(key)
 
-            # Extract category
-            categories = product.get("categories", "").split(",")
-            category = categories[0].strip() if categories else ""
+            # Extract category (get first category, clean it up)
+            categories_raw = product.get("categories", "") or product.get(f"categories_{lang}", "")
+            categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
+            category = categories[0] if categories else ""
 
-            # Build description from ingredients or generic text
-            ingredients = product.get(f"ingredients_text_{lang}") or product.get("ingredients_text") or ""
-            local_equivalent = f"Product from {product.get('countries', 'unknown origin')}."
-            if ingredients:
-                local_equivalent += f" Ingredients: {ingredients[:200]}{'...' if len(ingredients) > 200 else ''}"
+            # Build a useful description
+            generic_name = (
+                product.get(f"generic_name_{lang}") or
+                product.get("generic_name_en") or
+                product.get("generic_name") or
+                ""
+            )
+
+            # Get quantity/serving info
+            quantity = product.get("quantity", "")
+
+            # Get nutrition grade if available
+            nutriscore = product.get("nutriscore_grade", "").upper()
+            nutriscore_text = f"Nutri-Score: {nutriscore}" if nutriscore and nutriscore != "UNKNOWN" else ""
+
+            # Build description parts
+            description_parts = []
+            if generic_name and generic_name.lower() != name.lower():
+                description_parts.append(generic_name)
+            if category:
+                description_parts.append(f"Category: {category}")
+            if quantity:
+                description_parts.append(f"Size: {quantity}")
+            if nutriscore_text:
+                description_parts.append(nutriscore_text)
+
+            local_equivalent = ". ".join(description_parts) if description_parts else "Product information from Open Food Facts database."
+
+            # Get ingredients for usage field (more relevant there)
+            ingredients = product.get(f"ingredients_text_{lang}") or product.get("ingredients_text_en") or product.get("ingredients_text") or ""
+            usage = f"Ingredients: {ingredients[:300]}{'...' if len(ingredients) > 300 else ''}" if ingredients else ""
 
             return {
                 "gtin": barcode,
@@ -203,7 +230,7 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
                 "lang": lang,
                 "name": name,
                 "localEquivalent": local_equivalent,
-                "usage": "",
+                "usage": usage,
                 "brand": brand,
                 "category": category,
                 "allergens": localize_allergens(allergens, lang),
