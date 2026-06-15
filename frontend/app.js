@@ -224,21 +224,11 @@ function stopScanner() {
   }
 }
 
-/* ---- Sample chips (demo convenience; not part of production UX) ---- */
-async function buildSamples() {
-  try {
-    const res = await fetch(`/api/products?lang=${lang}`);
-    const items = await res.json();
-    const wrap = $("samples");
-    wrap.innerHTML = "";
-    items.forEach((p) => {
-      const chip = document.createElement("span");
-      chip.className = "sample-chip";
-      chip.textContent = p.name;
-      chip.onclick = () => lookup(p.shelfCode);
-      wrap.appendChild(chip);
-    });
-  } catch (e) { /* backend not running */ }
+/* ---- Sample chips removed - using Open Food Facts only ---- */
+function buildSamples() {
+  // No longer using local products
+  const wrap = $("samples");
+  if (wrap) wrap.innerHTML = "";
 }
 
 /* ---- wiring ---- */

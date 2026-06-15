@@ -1,17 +1,12 @@
 """
 ScanFi backend — FastAPI service.
 
-Implements the core loop from the business plan:
-  scan shelf code  ->  resolve product  ->  localize to the traveller's language
-                   ->  return name + local-equivalent explanation + allergens + legal disclaimer
-
-Data sources (business plan 2.2) are abstracted behind the JSON store in /data.
-Falls back to Open Food Facts API for real commercial products.
+Fetches product info from Open Food Facts, then auto-translates
+to the user's selected language.
 
 Run:
     pip install fastapi uvicorn httpx
     uvicorn app:app --reload --port 8000
-Then open http://localhost:8000
 """
 
 import json
@@ -29,7 +24,7 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 SUPPORTED_LANGS = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"]
 DEFAULT_LANG = "en"
 
-# Legal disclaimer (business plan 7.1 — allergy liability). Localized.
+# Legal disclaimer - pre-translated
 DISCLAIMER = {
     "en": "Allergen information is provided for guidance only. Always check the physical product packaging before consuming. ScanFi is not liable for allergic reactions.",
     "de": "Allergenangaben dienen nur zur Orientierung. Prüfen Sie vor dem Verzehr stets die Produktverpackung. ScanFi haftet nicht für allergische Reaktionen.",
@@ -52,20 +47,12 @@ def _load_json(name: str) -> dict:
         return json.load(fh)
 
 
-PRODUCTS = _load_json("products.json")["products"]
 ALLERGENS = _load_json("allergens.json")["allergens"]
-
-# Index by both shelf code and GTIN so a QR code can encode either.
-INDEX = {}
-for _p in PRODUCTS:
-    INDEX[_p["shelfCode"].upper()] = _p
-    INDEX[_p["gtin"]] = _p
 
 app = FastAPI(title="ScanFi API", version="0.1.0")
 
 
 def normalize_lang(lang: str | None) -> str:
-    """Map a browser language tag (e.g. 'de-AT', 'zh-Hans') to a supported language."""
     if not lang:
         return DEFAULT_LANG
     base = lang.lower().split("-")[0]
@@ -80,42 +67,58 @@ def localize_allergens(keys: list[str], lang: str) -> list[dict]:
     return out
 
 
-def build_payload(product: dict, lang: str) -> dict:
-    tr = product["translations"].get(lang) or product["translations"][DEFAULT_LANG]
-    return {
-        "gtin": product["gtin"],
-        "shelfCode": product["shelfCode"],
-        "lang": lang,
-        "name": tr["name"],
-        "localEquivalent": tr["localEquivalent"],
-        "usage": tr.get("usage", ""),
-        "brand": product.get("brand", ""),
-        "category": product.get("category", ""),
-        "allergens": localize_allergens(product.get("allergens", []), lang),
-        "source": product.get("source", "UNKNOWN"),
-        "verified": product.get("verified", False),
-        "disclaimer": DISCLAIMER.get(lang, DISCLAIMER[DEFAULT_LANG]),
-    }
+# ---- Translation using MyMemory API (free) ----
+MYMEMORY_URL = "https://api.mymemory.translated.net/get"
+
+async def translate_text(text: str, source_lang: str, target_lang: str, client: httpx.AsyncClient) -> str:
+    """Translate text using MyMemory API. Free, no API key needed."""
+    if not text or source_lang == target_lang:
+        return text
+
+    try:
+        response = await client.get(
+            MYMEMORY_URL,
+            params={
+                "q": text[:500],  # MyMemory has length limits
+                "langpair": f"{source_lang}|{target_lang}"
+            },
+            timeout=5.0
+        )
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("responseStatus") == 200:
+                # Check matches for better translations (higher quality scores)
+                matches = data.get("matches", [])
+                best_translation = None
+                best_score = -1
+
+                for match in matches:
+                    quality = float(match.get("quality", 0) or 0)
+                    match_score = float(match.get("match", 0) or 0)
+                    score = quality + (match_score * 100)
+                    translation = match.get("translation", "")
+
+                    # Skip wiki-style translations with # or very short ones
+                    if translation and "#" not in translation and len(translation) > 2:
+                        if score > best_score:
+                            best_score = score
+                            best_translation = translation
+
+                if best_translation:
+                    return best_translation
+
+                # Fallback to main response
+                translated = data.get("responseData", {}).get("translatedText", "")
+                if translated and "#" not in translated and translated.upper() != text.upper():
+                    return translated
+    except Exception as e:
+        print(f"Translation error: {e}")
+
+    return text  # Return original if translation fails
 
 
 # ---- Open Food Facts Integration ----
-# Use language-specific OFF subdomain for better localization
-OFF_API_URL = "https://{lang}.openfoodfacts.org/api/v2/product/{barcode}.json"
-OFF_LANG_MAP = {
-    "en": "world",  # world = English
-    "de": "de",
-    "fr": "fr",
-    "es": "es",
-    "zh": "cn",
-    "fi": "fi",
-    "sv": "se",
-    "ru": "ru",
-    "ja": "jp",
-    "it": "it",
-    "pt": "pt",
-    "nl": "nl",
-    "pl": "pl",
-}
+OFF_API_URL = "https://world.openfoodfacts.org/api/v2/product/{barcode}.json"
 
 # Map OFF allergen tags to our allergen keys
 OFF_ALLERGEN_MAP = {
@@ -133,7 +136,6 @@ OFF_ALLERGEN_MAP = {
     "en:sesame-seeds": "sesame",
     "en:sulphur-dioxide-and-sulphites": "sulphites",
     "en:lupin": "lupin",
-    # Common variations
     "en:wheat": "gluten",
     "en:barley": "gluten",
     "en:oats": "gluten",
@@ -142,13 +144,28 @@ OFF_ALLERGEN_MAP = {
 }
 
 
-async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
-    """Fetch product from Open Food Facts API."""
+def detect_source_language(product: dict) -> str:
+    """Detect the language of the product data."""
+    # Check if product has a primary language set
+    lc = product.get("lc", "")
+    if lc in SUPPORTED_LANGS:
+        return lc
+
+    # Check countries - Finnish products likely in Finnish
+    countries = product.get("countries_tags", [])
+    if "en:finland" in countries:
+        return "fi"
+
+    # Default to English
+    return "en"
+
+
+async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | None:
+    """Fetch product from Open Food Facts and translate to target language."""
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            # Use language-specific subdomain
-            off_lang = OFF_LANG_MAP.get(lang, "world")
-            url = OFF_API_URL.format(lang=off_lang, barcode=barcode)
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            # Fetch from world (English) subdomain - most complete data
+            url = OFF_API_URL.format(barcode=barcode)
             response = await client.get(url)
 
             if response.status_code != 200:
@@ -160,23 +177,16 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
                 return None
 
             product = data["product"]
+            source_lang = detect_source_language(product)
 
-            # Extract product name - prioritize user's language, then English
-            name = (
-                product.get(f"product_name_{lang}") or
-                product.get("product_name_en") or
-                product.get("product_name") or
-                "Unknown Product"
-            )
-
-            # If name is still in Finnish but user wants another language, note it
-            original_name = product.get("product_name", "")
-            if name == original_name and lang != "fi" and original_name:
-                # Product name not translated, keep original but we'll translate description
-                pass
-
-            # Extract brand
+            # Get raw product info (in native language)
+            name = product.get("product_name") or "Unknown Product"
             brand = product.get("brands", "").split(",")[0].strip() or "Unknown Brand"
+            generic_name = product.get("generic_name") or ""
+            categories = product.get("categories") or ""
+            category = categories.split(",")[0].strip() if categories else ""
+            quantity = product.get("quantity", "")
+            ingredients = product.get("ingredients_text") or ""
 
             # Extract allergens
             allergen_tags = product.get("allergens_tags", [])
@@ -188,61 +198,47 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
                     allergens.append(key)
                     seen.add(key)
 
-            # Build a useful description - prioritize user's language
-            generic_name = (
-                product.get(f"generic_name_{lang}") or
-                product.get("generic_name_en") or
-                product.get("generic_name") or
-                ""
-            )
+            # Translate if needed
+            if source_lang != target_lang:
+                name = await translate_text(name, source_lang, target_lang, client)
+                if generic_name:
+                    generic_name = await translate_text(generic_name, source_lang, target_lang, client)
+                if category:
+                    category = await translate_text(category, source_lang, target_lang, client)
+                if ingredients:
+                    # Translate first 300 chars of ingredients
+                    ingredients = await translate_text(ingredients[:300], source_lang, target_lang, client)
 
-            # Get categories in user's language if available
-            categories_raw = (
-                product.get(f"categories_{lang}") or
-                product.get("categories_en") or
-                product.get("categories") or
-                ""
-            )
-            categories = [c.strip() for c in categories_raw.split(",") if c.strip()]
-            category = categories[0] if categories else ""
-
-            # Get quantity/serving info
-            quantity = product.get("quantity", "")
-
-            # Get nutrition grade if available
+            # Build description
             nutriscore = product.get("nutriscore_grade", "").upper()
             nutriscore_text = f"Nutri-Score: {nutriscore}" if nutriscore and nutriscore != "UNKNOWN" else ""
 
-            # Build description parts
             description_parts = []
             if generic_name and generic_name.lower() != name.lower():
                 description_parts.append(generic_name)
             if category:
-                description_parts.append(f"Category: {category}")
+                description_parts.append(category)
             if quantity:
-                description_parts.append(f"Size: {quantity}")
+                description_parts.append(quantity)
             if nutriscore_text:
                 description_parts.append(nutriscore_text)
 
-            local_equivalent = ". ".join(description_parts) if description_parts else "Product information from Open Food Facts database."
-
-            # Get ingredients for usage field (more relevant there)
-            ingredients = product.get(f"ingredients_text_{lang}") or product.get("ingredients_text_en") or product.get("ingredients_text") or ""
-            usage = f"Ingredients: {ingredients[:300]}{'...' if len(ingredients) > 300 else ''}" if ingredients else ""
+            local_equivalent = ". ".join(description_parts) if description_parts else ""
+            usage = f"Ingredients: {ingredients}{'...' if len(ingredients) >= 300 else ''}" if ingredients else ""
 
             return {
                 "gtin": barcode,
                 "shelfCode": barcode,
-                "lang": lang,
+                "lang": target_lang,
                 "name": name,
                 "localEquivalent": local_equivalent,
                 "usage": usage,
                 "brand": brand,
                 "category": category,
-                "allergens": localize_allergens(allergens, lang),
+                "allergens": localize_allergens(allergens, target_lang),
                 "source": "OPEN_FOOD_FACTS",
                 "verified": False,
-                "disclaimer": DISCLAIMER.get(lang, DISCLAIMER[DEFAULT_LANG]),
+                "disclaimer": DISCLAIMER.get(target_lang, DISCLAIMER[DEFAULT_LANG]),
             }
     except Exception as e:
         print(f"Open Food Facts API error: {e}")
@@ -251,13 +247,13 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "products": len(PRODUCTS), "languages": SUPPORTED_LANGS}
+    return {"status": "ok", "languages": SUPPORTED_LANGS}
 
 
 @app.get("/api/products")
 def list_products(lang: str = Query(DEFAULT_LANG)):
-    lang = normalize_lang(lang)
-    return [build_payload(p, lang) for p in PRODUCTS]
+    # No local products anymore - return empty list
+    return []
 
 
 @app.get("/api/product/{code}")
@@ -265,12 +261,7 @@ async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
     lang = normalize_lang(lang)
     code = code.strip()
 
-    # First, check local database
-    product = INDEX.get(code.upper()) or INDEX.get(code)
-    if product:
-        return JSONResponse(build_payload(product, lang))
-
-    # If not found locally, try Open Food Facts (for barcodes)
+    # Clean barcode - extract digits only
     clean_code = ''.join(c for c in code if c.isdigit())
 
     if len(clean_code) >= 8:
@@ -281,6 +272,6 @@ async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
     raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
 
 
-# Serve the PWA. Mounted last so /api/* routes take precedence.
+# Serve the PWA
 if FRONTEND_DIR.exists():
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
