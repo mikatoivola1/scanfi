@@ -93,10 +93,24 @@ function renderProduct(p) {
     allergensHtml = `<div class="allergen-none">✓ ${t.none}</div>`;
   }
 
+  // Show original name with translation if different
+  const origName = p.originalName || p.name;
+  const transName = p.name;
+  const nameHtml = (origName !== transName && transName)
+    ? `<h1>${escapeHtml(origName)}</h1><div class="translated-name">(${escapeHtml(transName)})</div>`
+    : `<h1>${escapeHtml(origName)}</h1>`;
+
+  // Show original brand with translation if different
+  const origBrand = p.originalBrand || p.brand;
+  const transBrand = p.brand;
+  const brandHtml = (origBrand !== transBrand && transBrand)
+    ? `${escapeHtml(origBrand)} <span class="translated-brand">(${escapeHtml(transBrand)})</span>`
+    : escapeHtml(origBrand);
+
   $("productCard").innerHTML = `
     <span class="badge ${badgeClass}">${p.verified ? "✓" : "ℹ"} ${badgeText}</span>
-    <h1>${escapeHtml(p.name)}</h1>
-    <div class="brand-line">${escapeHtml(p.brand)}</div>
+    ${nameHtml}
+    <div class="brand-line">${brandHtml}</div>
 
     <div class="section-label">${t.equiv}</div>
     <p class="equiv">${escapeHtml(p.localEquivalent)}</p>

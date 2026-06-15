@@ -236,10 +236,22 @@ html, body {
   line-height: 1.3;
 }
 
+.translated-name {
+  font-size: 1rem;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
 .brand-line {
   color: var(--text-muted);
   font-size: 0.95rem;
   margin-bottom: 1.25rem;
+}
+
+.translated-brand {
+  color: var(--accent);
+  font-style: italic;
 }
 
 .section-label {

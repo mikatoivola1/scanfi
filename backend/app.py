@@ -180,8 +180,8 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
             source_lang = detect_source_language(product)
 
             # Get raw product info (in native language)
-            name = product.get("product_name") or "Unknown Product"
-            brand = product.get("brands", "").split(",")[0].strip() or "Unknown Brand"
+            original_name = product.get("product_name") or "Unknown Product"
+            original_brand = product.get("brands", "").split(",")[0].strip() or "Unknown Brand"
             generic_name = product.get("generic_name") or ""
             categories = product.get("categories") or ""
             category = categories.split(",")[0].strip() if categories else ""
@@ -198,9 +198,13 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
                     allergens.append(key)
                     seen.add(key)
 
-            # Translate if needed
+            # Keep originals, translate if needed
+            translated_name = original_name
+            translated_brand = original_brand
+
             if source_lang != target_lang:
-                name = await translate_text(name, source_lang, target_lang, client)
+                translated_name = await translate_text(original_name, source_lang, target_lang, client)
+                translated_brand = await translate_text(original_brand, source_lang, target_lang, client)
                 if generic_name:
                     generic_name = await translate_text(generic_name, source_lang, target_lang, client)
                 if category:
@@ -230,10 +234,12 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
                 "gtin": barcode,
                 "shelfCode": barcode,
                 "lang": target_lang,
-                "name": name,
+                "name": translated_name,
+                "originalName": original_name,
                 "localEquivalent": local_equivalent,
                 "usage": usage,
-                "brand": brand,
+                "brand": translated_brand,
+                "originalBrand": original_brand,
                 "category": category,
                 "allergens": localize_allergens(allergens, target_lang),
                 "source": "OPEN_FOOD_FACTS",
