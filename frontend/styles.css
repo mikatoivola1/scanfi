@@ -47,6 +47,30 @@ html, body {
   color: var(--accent);
 }
 
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.help-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.help-link:hover {
+  background: var(--accent);
+}
+
 .lang-select {
   padding: 0.4rem 0.6rem;
   border: none;

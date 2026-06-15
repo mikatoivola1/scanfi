@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScanFi - Quick Start Guide</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      color: #2d3436;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #0a3d62;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    h1 span { color: #38ada9; }
+    .subtitle {
+      color: #636e72;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    .qr-section {
+      text-align: center;
+      background: #f8f9fa;
+      padding: 2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+    .qr-section img {
+      max-width: 200px;
+      border: 4px solid #38ada9;
+      border-radius: 16px;
+      padding: 12px;
+      background: #fff;
+    }
+    .url {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0a3d62;
+    }
+    .url a {
+      color: #0a3d62;
+      text-decoration: none;
+    }
+    .url a:hover { text-decoration: underline; }
+    h2 {
+      color: #0a3d62;
+      font-size: 1.3rem;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #38ada9;
+    }
+    .steps {
+      counter-reset: step;
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      background: #38ada9;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step-content strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    ul {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+    }
+    li { margin-bottom: 0.5rem; }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .feature {
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .feature::before {
+      content: "✓ ";
+      color: #38ada9;
+      font-weight: bold;
+    }
+    .languages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .lang {
+      background: #e8f4f4;
+      color: #0a3d62;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    .tip {
+      background: #fff3e0;
+      border-left: 4px solid #f39c12;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .tip strong { color: #e67e22; }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #dfe6e9;
+      text-align: center;
+      color: #636e72;
+      font-size: 0.9rem;
+    }
+    @media print {
+      body { padding: 1rem; }
+      .qr-section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Scan<span>Fi</span></h1>
+  <p class="subtitle">Your guide to Finnish products - in your language!</p>
+
+  <div class="qr-section">
+    <img src="frontend/codes/app-qr.png" alt="ScanFi QR Code" />
+    <p class="url"><a href="https://scanfi.onrender.com">https://scanfi.onrender.com</a></p>
+    <p style="margin-top: 0.5rem; color: #636e72;">Scan this QR code or tap the link</p>
+  </div>
+
+  <h2>What is ScanFi?</h2>
+  <p>ScanFi helps you understand Finnish products by translating product information to your language. Just scan any product barcode!</p>
+
+  <div class="features">
+    <div class="feature">Product names</div>
+    <div class="feature">Allergen warnings</div>
+    <div class="feature">Ingredients list</div>
+    <div class="feature">Nutrition facts</div>
+    <div class="feature">Halal/Kosher info</div>
+    <div class="feature">Vegan/Vegetarian</div>
+  </div>
+
+  <h2>How to Use</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-content">
+        <strong>Open ScanFi</strong>
+        Scan the QR code above or open the link on your phone
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Choose Your Language</strong>
+        Tap the language dropdown in the top-right corner
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>Start Scanning</strong>
+        Tap "Start Scanning" and point your camera at any product barcode
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-content">
+        <strong>View Product Info</strong>
+        See all product details translated to your language!
+      </div>
+    </div>
+  </div>
+
+  <h2>Supported Languages</h2>
+  <div class="languages">
+    <span class="lang">English</span>
+    <span class="lang">Deutsch</span>
+    <span class="lang">Français</span>
+    <span class="lang">Español</span>
+    <span class="lang">中文</span>
+    <span class="lang">Suomi</span>
+    <span class="lang">Svenska</span>
+    <span class="lang">Русский</span>
+    <span class="lang">日本語</span>
+    <span class="lang">Italiano</span>
+    <span class="lang">Português</span>
+    <span class="lang">Nederlands</span>
+    <span class="lang">Polski</span>
+  </div>
+
+  <h2>Add to Home Screen</h2>
+  <p>For quick access, add ScanFi to your phone:</p>
+  <ul>
+    <li><strong>iPhone:</strong> Tap Share → "Add to Home Screen"</li>
+    <li><strong>Android:</strong> Tap menu (⋮) → "Install App" or "Add to Home Screen"</li>
+  </ul>
+
+  <div class="tip">
+    <strong>Tip:</strong> No app download needed! ScanFi works directly in your browser. Product data comes from the Open Food Facts community database.
+  </div>
+
+  <footer>
+    ScanFi - Made for tourists in Finland<br>
+    Always check the physical product packaging for allergen information
+  </footer>
+</body>
+</html>

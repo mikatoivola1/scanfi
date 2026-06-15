@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScanFi - User Guide</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .help-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .help-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+    }
+    .help-section h2 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    .help-section p, .help-section li {
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+    .help-section ul {
+      padding-left: 1.5rem;
+    }
+    .qr-container {
+      text-align: center;
+      padding: 2rem;
+    }
+    .qr-container img {
+      max-width: 200px;
+      border: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+    }
+    .qr-container p {
+      margin-top: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .url-box {
+      background: var(--bg);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      margin: 1rem 0;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .step-num {
+      background: var(--accent);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .languages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .lang-chip {
+      background: var(--bg);
+      padding: 0.3rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    .feature-list li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+    .feature-list li::before {
+      content: "✓ ";
+      color: var(--accent);
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      padding: 0.5rem 0;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Scan<span>Fi</span></div>
+  </header>
+
+  <div class="help-container">
+    <a href="index.html" class="back-link">&larr; Back to Scanner</a>
+
+    <!-- QR Code Section -->
+    <div class="help-section qr-container">
+      <img src="codes/app-qr.png" alt="ScanFi QR Code" />
+      <p>Scan to open ScanFi</p>
+      <div class="url-box">https://scanfi.onrender.com</div>
+    </div>
+
+    <!-- What is ScanFi -->
+    <div class="help-section">
+      <h2>What is ScanFi?</h2>
+      <p>ScanFi helps tourists in Finland understand product information. Simply scan any product barcode and get:</p>
+      <ul class="feature-list">
+        <li>Product name translated to your language</li>
+        <li>Allergen warnings (gluten, milk, nuts, etc.)</li>
+        <li>Dietary info (Halal, Kosher, Vegan, Vegetarian)</li>
+        <li>Nutrition facts (calories, fat, sugar, etc.)</li>
+        <li>Ingredients list</li>
+        <li>Nutri-Score and health ratings</li>
+      </ul>
+    </div>
+
+    <!-- How to Use -->
+    <div class="help-section">
+      <h2>How to Use</h2>
+
+      <div class="step">
+        <span class="step-num">1</span>
+        <div>
+          <strong>Open ScanFi</strong><br>
+          Scan the QR code above or visit the URL on your phone
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">2</span>
+        <div>
+          <strong>Select Your Language</strong><br>
+          Tap the language dropdown in the top right corner
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">3</span>
+        <div>
+          <strong>Scan a Product</strong><br>
+          Tap "Start Scanning" and point your camera at any product barcode
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">4</span>
+        <div>
+          <strong>View Product Info</strong><br>
+          See translated product details, allergens, and nutrition facts
+        </div>
+      </div>
+    </div>
+
+    <!-- Supported Languages -->
+    <div class="help-section">
+      <h2>Supported Languages</h2>
+      <div class="languages">
+        <span class="lang-chip">English</span>
+        <span class="lang-chip">Deutsch</span>
+        <span class="lang-chip">Français</span>
+        <span class="lang-chip">Español</span>
+        <span class="lang-chip">中文</span>
+        <span class="lang-chip">Suomi</span>
+        <span class="lang-chip">Svenska</span>
+        <span class="lang-chip">Русский</span>
+        <span class="lang-chip">日本語</span>
+        <span class="lang-chip">Italiano</span>
+        <span class="lang-chip">Português</span>
+        <span class="lang-chip">Nederlands</span>
+        <span class="lang-chip">Polski</span>
+      </div>
+    </div>
+
+    <!-- Add to Home Screen -->
+    <div class="help-section">
+      <h2>Add to Home Screen</h2>
+      <p>For quick access, add ScanFi to your phone's home screen:</p>
+      <p><strong>iPhone:</strong> Tap the Share button → "Add to Home Screen"</p>
+      <p><strong>Android:</strong> Tap the menu (⋮) → "Add to Home Screen" or "Install App"</p>
+    </div>
+
+    <!-- Tips -->
+    <div class="help-section">
+      <h2>Tips</h2>
+      <ul>
+        <li>Hold your phone steady when scanning</li>
+        <li>Make sure the barcode is well-lit</li>
+        <li>You can also type the barcode number manually</li>
+        <li>Product data comes from Open Food Facts community database</li>
+        <li>Always check the physical packaging for allergen info</li>
+      </ul>
+    </div>
+
+    <footer class="footer">
+      ScanFi · Made for tourists in Finland<br>
+      Data from Open Food Facts
+    </footer>
+  </div>
+</body>
+</html>
