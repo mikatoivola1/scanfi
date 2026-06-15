@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 FRONTEND_DIR = BASE_DIR / "frontend"
 
-SUPPORTED_LANGS = ["en", "de", "fr", "es", "zh"]   # launch languages, plan 2.1
+SUPPORTED_LANGS = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"]
 DEFAULT_LANG = "en"
 
 # Legal disclaimer (business plan 7.1 — allergy liability). Localized.
@@ -36,6 +36,14 @@ DISCLAIMER = {
     "fr": "Les informations sur les allergènes sont fournies à titre indicatif. Vérifiez toujours l'emballage du produit avant consommation. ScanFi décline toute responsabilité.",
     "es": "La información sobre alérgenos es solo orientativa. Compruebe siempre el envase del producto antes de consumir. ScanFi no se responsabiliza de reacciones alérgicas.",
     "zh": "过敏原信息仅供参考。食用前请务必查看产品实物包装。ScanFi 不对过敏反应承担责任。",
+    "fi": "Allergeenitieto on vain ohjeellista. Tarkista aina tuotepakkaus ennen nauttimista. ScanFi ei vastaa allergisista reaktioista.",
+    "sv": "Allergeninformation ges endast som vägledning. Kontrollera alltid produktförpackningen före konsumtion. ScanFi ansvarar inte för allergiska reaktioner.",
+    "ru": "Информация об аллергенах носит справочный характер. Всегда проверяйте упаковку продукта перед употреблением. ScanFi не несёт ответственности за аллергические реакции.",
+    "ja": "アレルゲン情報は参考用です。必ず製品パッケージをご確認ください。ScanFiはアレルギー反応について責任を負いません。",
+    "it": "Le informazioni sugli allergeni sono solo indicative. Controllare sempre la confezione del prodotto prima del consumo. ScanFi non è responsabile per reazioni allergiche.",
+    "pt": "As informações sobre alergénios são apenas indicativas. Verifique sempre a embalagem do produto antes de consumir. ScanFi não se responsabiliza por reações alérgicas.",
+    "nl": "Allergeneninformatie is alleen ter indicatie. Controleer altijd de productverpakking voor consumptie. ScanFi is niet aansprakelijk voor allergische reacties.",
+    "pl": "Informacje o alergenach mają charakter orientacyjny. Zawsze sprawdzaj opakowanie produktu przed spożyciem. ScanFi nie ponosi odpowiedzialności za reakcje alergiczne.",
 }
 
 
@@ -91,7 +99,23 @@ def build_payload(product: dict, lang: str) -> dict:
 
 
 # ---- Open Food Facts Integration ----
-OFF_API_URL = "https://world.openfoodfacts.org/api/v2/product/{barcode}.json"
+# Use language-specific OFF subdomain for better localization
+OFF_API_URL = "https://{lang}.openfoodfacts.org/api/v2/product/{barcode}.json"
+OFF_LANG_MAP = {
+    "en": "world",  # world = English
+    "de": "de",
+    "fr": "fr",
+    "es": "es",
+    "zh": "cn",
+    "fi": "fi",
+    "sv": "se",
+    "ru": "ru",
+    "ja": "jp",
+    "it": "it",
+    "pt": "pt",
+    "nl": "nl",
+    "pl": "pl",
+}
 
 # Map OFF allergen tags to our allergen keys
 OFF_ALLERGEN_MAP = {
@@ -122,7 +146,9 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
     """Fetch product from Open Food Facts API."""
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            url = OFF_API_URL.format(barcode=barcode)
+            # Use language-specific subdomain
+            off_lang = OFF_LANG_MAP.get(lang, "world")
+            url = OFF_API_URL.format(lang=off_lang, barcode=barcode)
             print(f"[DEBUG] Fetching from OFF: {url}")
             response = await client.get(url)
             print(f"[DEBUG] OFF response status: {response.status_code}")
@@ -137,11 +163,14 @@ async def fetch_from_open_food_facts(barcode: str, lang: str) -> dict | None:
 
             product = data["product"]
 
-            # Extract product name (try localized, fall back to generic)
+            # Extract product name with proper language fallback
+            # Priority: requested lang -> English -> generic -> any available
             name = (
                 product.get(f"product_name_{lang}") or
-                product.get("product_name") or
                 product.get("product_name_en") or
+                product.get("product_name") or
+                product.get("generic_name_en") or
+                product.get("generic_name") or
                 "Unknown Product"
             )
 

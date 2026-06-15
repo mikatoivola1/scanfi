@@ -3,8 +3,12 @@
  * scans a shelf QR code, and renders localized product + allergen info.
  */
 
-const SUPPORTED = ["en", "de", "fr", "es", "zh"];
-const LANG_NAMES = { en: "English", de: "Deutsch", fr: "Français", es: "Español", zh: "中文" };
+const SUPPORTED = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"];
+const LANG_NAMES = {
+  en: "English", de: "Deutsch", fr: "Français", es: "Español", zh: "中文",
+  fi: "Suomi", sv: "Svenska", ru: "Русский", ja: "日本語",
+  it: "Italiano", pt: "Português", nl: "Nederlands", pl: "Polski"
+};
 
 // UI string table (the app shell itself is localized too, not just product data).
 const UI = {
@@ -13,6 +17,14 @@ const UI = {
   fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", contains: "Contient", none: "Aucun allergène majeur signalé", equiv: "Qu'est-ce que c'est ?", usage: "Utilisation", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan" },
   es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", contains: "Contiene", none: "Sin alérgenos principales listados", equiv: "¿Qué es?", usage: "Cómo usar", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo" },
   zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", contains: "含有", none: "未列出主要过敏原", equiv: "这是什么？", usage: "食用方法", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描" },
+  fi: { hint: "Skannaa QR-koodi tai viivakoodi", lookup: "Hae", manual: "tai kirjoita koodi (esim. SKF-0001 tai viivakoodi)", back: "Skannaa toinen", source_v: "Vahvistettu tieto (GS1)", source_c: "Yhteisön tieto", allergens: "Allergeenit", contains: "Sisältää", none: "Ei merkittäviä allergeeneja", equiv: "Mikä tämä on?", usage: "Käyttöohje", notfound: "Tuotetta ei löytynyt tällä koodilla.", footer: "ScanFi · Demo · Tarkista aina pakkaus.", startScan: "Aloita skannaus" },
+  sv: { hint: "Skanna QR-kod eller streckkod", lookup: "Sök", manual: "eller skriv en kod (t.ex. SKF-0001 eller streckkod)", back: "Skanna igen", source_v: "Verifierad data (GS1)", source_c: "Community-data", allergens: "Allergener", contains: "Innehåller", none: "Inga allergener listade", equiv: "Vad är det?", usage: "Användning", notfound: "Ingen produkt hittades för den koden.", footer: "ScanFi · Demo · Kontrollera alltid förpackningen.", startScan: "Börja skanna" },
+  ru: { hint: "Сканируйте QR-код или штрих-код", lookup: "Найти", manual: "или введите код (напр. SKF-0001 или штрих-код)", back: "Сканировать ещё", source_v: "Проверенные данные (GS1)", source_c: "Данные сообщества", allergens: "Аллергены", contains: "Содержит", none: "Аллергены не указаны", equiv: "Что это?", usage: "Применение", notfound: "Продукт не найден.", footer: "ScanFi · Демо · Всегда проверяйте упаковку.", startScan: "Начать сканирование" },
+  ja: { hint: "QRコードまたはバーコードをスキャン", lookup: "検索", manual: "またはコードを入力（例：SKF-0001またはバーコード）", back: "もう一度スキャン", source_v: "認証済みデータ (GS1)", source_c: "コミュニティデータ", allergens: "アレルゲン", contains: "含有", none: "主要アレルゲンなし", equiv: "これは何？", usage: "使用方法", notfound: "商品が見つかりません。", footer: "ScanFi · デモ · 必ずパッケージを確認してください。", startScan: "スキャン開始" },
+  it: { hint: "Scansiona QR code o codice a barre", lookup: "Cerca", manual: "o inserisci un codice (es. SKF-0001 o codice a barre)", back: "Scansiona altro", source_v: "Dati verificati (GS1)", source_c: "Dati della community", allergens: "Allergeni", contains: "Contiene", none: "Nessun allergene principale", equiv: "Cos'è?", usage: "Come usare", notfound: "Nessun prodotto trovato per questo codice.", footer: "ScanFi · Demo · Controlla sempre la confezione.", startScan: "Inizia scansione" },
+  pt: { hint: "Digitalize o código QR ou código de barras", lookup: "Pesquisar", manual: "ou digite um código (ex. SKF-0001 ou código de barras)", back: "Digitalizar outro", source_v: "Dados verificados (GS1)", source_c: "Dados da comunidade", allergens: "Alergénios", contains: "Contém", none: "Sem alergénios principais", equiv: "O que é?", usage: "Como usar", notfound: "Nenhum produto encontrado para este código.", footer: "ScanFi · Demo · Verifique sempre a embalagem.", startScan: "Iniciar digitalização" },
+  nl: { hint: "Scan QR-code of barcode", lookup: "Zoeken", manual: "of typ een code (bijv. SKF-0001 of barcode)", back: "Opnieuw scannen", source_v: "Geverifieerde gegevens (GS1)", source_c: "Community-gegevens", allergens: "Allergenen", contains: "Bevat", none: "Geen allergenen vermeld", equiv: "Wat is het?", usage: "Gebruik", notfound: "Geen product gevonden voor deze code.", footer: "ScanFi · Demo · Controleer altijd de verpakking.", startScan: "Start scannen" },
+  pl: { hint: "Zeskanuj kod QR lub kod kreskowy", lookup: "Szukaj", manual: "lub wpisz kod (np. SKF-0001 lub kod kreskowy)", back: "Skanuj ponownie", source_v: "Zweryfikowane dane (GS1)", source_c: "Dane społeczności", allergens: "Alergeny", contains: "Zawiera", none: "Brak alergenów", equiv: "Co to jest?", usage: "Jak używać", notfound: "Nie znaleziono produktu.", footer: "ScanFi · Demo · Zawsze sprawdzaj opakowanie.", startScan: "Rozpocznij skanowanie" },
 };
 
 function detectLang() {

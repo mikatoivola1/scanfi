@@ -1,20 +1,20 @@
 {
-  "_comment": "Master allergen list. Keys are stable internal IDs (EU FIC Annex II 14 major allergens). Labels are localized for the supported launch languages from the business plan: en, de, fr, es, zh.",
+  "_comment": "Master allergen list. Keys are stable internal IDs (EU FIC Annex II 14 major allergens). Labels are localized for supported languages.",
   "allergens": {
-    "gluten":     { "en": "Gluten (cereals)", "de": "Gluten (Getreide)", "fr": "Gluten (céréales)", "es": "Gluten (cereales)", "zh": "麸质（谷物）" },
-    "crustaceans":{ "en": "Crustaceans", "de": "Krebstiere", "fr": "Crustacés", "es": "Crustáceos", "zh": "甲壳类" },
-    "eggs":       { "en": "Eggs", "de": "Eier", "fr": "Œufs", "es": "Huevos", "zh": "蛋类" },
-    "fish":       { "en": "Fish", "de": "Fisch", "fr": "Poisson", "es": "Pescado", "zh": "鱼类" },
-    "peanuts":    { "en": "Peanuts", "de": "Erdnüsse", "fr": "Arachides", "es": "Cacahuetes", "zh": "花生" },
-    "soy":        { "en": "Soybeans", "de": "Soja", "fr": "Soja", "es": "Soja", "zh": "大豆" },
-    "milk":       { "en": "Milk", "de": "Milch", "fr": "Lait", "es": "Leche", "zh": "牛奶" },
-    "lactose":    { "en": "Lactose", "de": "Laktose", "fr": "Lactose", "es": "Lactosa", "zh": "乳糖" },
-    "nuts":       { "en": "Tree nuts", "de": "Schalenfrüchte", "fr": "Fruits à coque", "es": "Frutos de cáscara", "zh": "坚果" },
-    "celery":     { "en": "Celery", "de": "Sellerie", "fr": "Céleri", "es": "Apio", "zh": "芹菜" },
-    "mustard":    { "en": "Mustard", "de": "Senf", "fr": "Moutarde", "es": "Mostaza", "zh": "芥末" },
-    "sesame":     { "en": "Sesame", "de": "Sesam", "fr": "Sésame", "es": "Sésamo", "zh": "芝麻" },
-    "sulphites":  { "en": "Sulphites", "de": "Sulfite", "fr": "Sulfites", "es": "Sulfitos", "zh": "亚硫酸盐" },
-    "lupin":      { "en": "Lupin", "de": "Lupinen", "fr": "Lupin", "es": "Altramuces", "zh": "羽扇豆" },
-    "molluscs":   { "en": "Molluscs", "de": "Weichtiere", "fr": "Mollusques", "es": "Moluscos", "zh": "软体动物" }
+    "gluten":     { "en": "Gluten (cereals)", "de": "Gluten (Getreide)", "fr": "Gluten (céréales)", "es": "Gluten (cereales)", "zh": "麸质（谷物）", "fi": "Gluteeni (viljat)", "sv": "Gluten (spannmål)", "ru": "Глютен (злаки)", "ja": "グルテン（穀物）", "it": "Glutine (cereali)", "pt": "Glúten (cereais)", "nl": "Gluten (granen)", "pl": "Gluten (zboża)" },
+    "crustaceans":{ "en": "Crustaceans", "de": "Krebstiere", "fr": "Crustacés", "es": "Crustáceos", "zh": "甲壳类", "fi": "Äyriäiset", "sv": "Kräftdjur", "ru": "Ракообразные", "ja": "甲殻類", "it": "Crostacei", "pt": "Crustáceos", "nl": "Schaaldieren", "pl": "Skorupiaki" },
+    "eggs":       { "en": "Eggs", "de": "Eier", "fr": "Œufs", "es": "Huevos", "zh": "蛋类", "fi": "Kananmunat", "sv": "Ägg", "ru": "Яйца", "ja": "卵", "it": "Uova", "pt": "Ovos", "nl": "Eieren", "pl": "Jaja" },
+    "fish":       { "en": "Fish", "de": "Fisch", "fr": "Poisson", "es": "Pescado", "zh": "鱼类", "fi": "Kala", "sv": "Fisk", "ru": "Рыба", "ja": "魚", "it": "Pesce", "pt": "Peixe", "nl": "Vis", "pl": "Ryby" },
+    "peanuts":    { "en": "Peanuts", "de": "Erdnüsse", "fr": "Arachides", "es": "Cacahuetes", "zh": "花生", "fi": "Maapähkinät", "sv": "Jordnötter", "ru": "Арахис", "ja": "ピーナッツ", "it": "Arachidi", "pt": "Amendoins", "nl": "Pinda's", "pl": "Orzeszki ziemne" },
+    "soy":        { "en": "Soybeans", "de": "Soja", "fr": "Soja", "es": "Soja", "zh": "大豆", "fi": "Soija", "sv": "Soja", "ru": "Соя", "ja": "大豆", "it": "Soia", "pt": "Soja", "nl": "Soja", "pl": "Soja" },
+    "milk":       { "en": "Milk", "de": "Milch", "fr": "Lait", "es": "Leche", "zh": "牛奶", "fi": "Maito", "sv": "Mjölk", "ru": "Молоко", "ja": "乳", "it": "Latte", "pt": "Leite", "nl": "Melk", "pl": "Mleko" },
+    "lactose":    { "en": "Lactose", "de": "Laktose", "fr": "Lactose", "es": "Lactosa", "zh": "乳糖", "fi": "Laktoosi", "sv": "Laktos", "ru": "Лактоза", "ja": "乳糖", "it": "Lattosio", "pt": "Lactose", "nl": "Lactose", "pl": "Laktoza" },
+    "nuts":       { "en": "Tree nuts", "de": "Schalenfrüchte", "fr": "Fruits à coque", "es": "Frutos de cáscara", "zh": "坚果", "fi": "Pähkinät", "sv": "Nötter", "ru": "Орехи", "ja": "ナッツ", "it": "Frutta a guscio", "pt": "Frutos de casca rija", "nl": "Noten", "pl": "Orzechy" },
+    "celery":     { "en": "Celery", "de": "Sellerie", "fr": "Céleri", "es": "Apio", "zh": "芹菜", "fi": "Selleri", "sv": "Selleri", "ru": "Сельдерей", "ja": "セロリ", "it": "Sedano", "pt": "Aipo", "nl": "Selderij", "pl": "Seler" },
+    "mustard":    { "en": "Mustard", "de": "Senf", "fr": "Moutarde", "es": "Mostaza", "zh": "芥末", "fi": "Sinappi", "sv": "Senap", "ru": "Горчица", "ja": "マスタード", "it": "Senape", "pt": "Mostarda", "nl": "Mosterd", "pl": "Gorczyca" },
+    "sesame":     { "en": "Sesame", "de": "Sesam", "fr": "Sésame", "es": "Sésamo", "zh": "芝麻", "fi": "Seesami", "sv": "Sesam", "ru": "Кунжут", "ja": "ゴマ", "it": "Sesamo", "pt": "Sésamo", "nl": "Sesam", "pl": "Sezam" },
+    "sulphites":  { "en": "Sulphites", "de": "Sulfite", "fr": "Sulfites", "es": "Sulfitos", "zh": "亚硫酸盐", "fi": "Sulfiitit", "sv": "Sulfiter", "ru": "Сульфиты", "ja": "亜硫酸塩", "it": "Solfiti", "pt": "Sulfitos", "nl": "Sulfieten", "pl": "Siarczyny" },
+    "lupin":      { "en": "Lupin", "de": "Lupinen", "fr": "Lupin", "es": "Altramuces", "zh": "羽扇豆", "fi": "Lupiini", "sv": "Lupin", "ru": "Люпин", "ja": "ルピナス", "it": "Lupino", "pt": "Tremoço", "nl": "Lupine", "pl": "Łubin" },
+    "molluscs":   { "en": "Molluscs", "de": "Weichtiere", "fr": "Mollusques", "es": "Moluscos", "zh": "软体动物", "fi": "Nilviäiset", "sv": "Blötdjur", "ru": "Моллюски", "ja": "軟体動物", "it": "Molluschi", "pt": "Moluscos", "nl": "Weekdieren", "pl": "Mięczaki" }
   }
 }
