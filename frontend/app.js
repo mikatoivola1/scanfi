@@ -181,42 +181,23 @@ function startScanner() {
   // Use Html5Qrcode's built-in camera support
   scanner = new Html5Qrcode("reader");
 
-  const config = {
-    fps: 15,
-    qrbox: function(viewfinderWidth, viewfinderHeight) {
-      // Use 80% of the smaller dimension for scanning area
-      let minDimension = Math.min(viewfinderWidth, viewfinderHeight);
-      let qrboxSize = Math.floor(minDimension * 0.8);
-      return { width: qrboxSize, height: qrboxSize };
-    },
-    formatsToSupport: [
-      Html5QrcodeSupportedFormats.QR_CODE,
-      Html5QrcodeSupportedFormats.EAN_13,
-      Html5QrcodeSupportedFormats.EAN_8,
-      Html5QrcodeSupportedFormats.CODE_128,
-      Html5QrcodeSupportedFormats.CODE_39,
-      Html5QrcodeSupportedFormats.UPC_A,
-      Html5QrcodeSupportedFormats.UPC_E
-    ]
-  };
-
   scanner.start(
     { facingMode: "environment" },
-    config,
+    {
+      fps: 10,
+      qrbox: 250
+    },
     function onScanSuccess(decodedText) {
-      console.log("Scanned:", decodedText);
       if (navigator.vibrate) navigator.vibrate(100);
-      // Stop scanner first, THEN show the code (to avoid clear() wiping our HTML)
       stopScanner(function() {
         showScannedCode(decodedText);
       });
     },
     function onScanFailure(error) {
-      // Ignore scan failures, keep trying
+      // Keep trying
     }
   ).catch(function(err) {
-    console.error("Camera error:", err);
-    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera access denied. Please allow camera access and refresh, or use manual entry below.</p>";
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera error. Please refresh and allow camera access.</p>";
   });
 }
 
