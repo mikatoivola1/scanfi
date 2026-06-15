@@ -170,7 +170,6 @@ function showScannedCode(code) {
 function startScanner() {
   const readerEl = $("reader");
   readerEl.innerHTML = "";
-  readerEl.classList.remove("hidden");
 
   // Check for camera support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -181,39 +180,47 @@ function startScanner() {
   // Use Html5Qrcode's built-in camera support
   scanner = new Html5Qrcode("reader");
 
+  const config = {
+    fps: 10,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0,
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.QR_CODE,
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.EAN_8,
+      Html5QrcodeSupportedFormats.CODE_128,
+      Html5QrcodeSupportedFormats.CODE_39,
+      Html5QrcodeSupportedFormats.UPC_A,
+      Html5QrcodeSupportedFormats.UPC_E
+    ]
+  };
+
   scanner.start(
     { facingMode: "environment" },
-    {
-      fps: 10,
-      qrbox: 250
-    },
+    config,
     function onScanSuccess(decodedText) {
       if (navigator.vibrate) navigator.vibrate(100);
-      stopScanner(function() {
-        showScannedCode(decodedText);
-      });
+      stopScanner();
+      var code = extractCode(decodedText);
+      $("manualCode").value = code;
+      lookup(code);
     },
     function onScanFailure(error) {
-      // Keep trying
+      // Ignore scan failures, keep trying
     }
   ).catch(function(err) {
-    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera error. Please refresh and allow camera access.</p>";
+    readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Camera access denied. Please allow camera access and refresh, or use manual entry below.</p>";
   });
 }
 
-function stopScanner(callback) {
+function stopScanner() {
   if (scanner) {
-    var s = scanner;
-    scanner = null;
-    s.stop().then(function() {
-      try { s.clear(); } catch(e) {}
-      if (callback) callback();
+    scanner.stop().then(function() {
+      scanner.clear();
+      scanner = null;
     }).catch(function(err) {
-      console.error("Stop error:", err);
-      if (callback) callback();
+      scanner = null;
     });
-  } else if (callback) {
-    callback();
   }
 }
 
