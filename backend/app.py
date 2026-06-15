@@ -210,25 +210,45 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
                 if category:
                     category = await translate_text(category, source_lang, target_lang, client)
                 if ingredients:
-                    # Translate first 300 chars of ingredients
-                    ingredients = await translate_text(ingredients[:300], source_lang, target_lang, client)
+                    ingredients = await translate_text(ingredients[:500], source_lang, target_lang, client)
 
-            # Build description
+            # Get additional product info
             nutriscore = product.get("nutriscore_grade", "").upper()
-            nutriscore_text = f"Nutri-Score: {nutriscore}" if nutriscore and nutriscore != "UNKNOWN" else ""
+            nova_group = product.get("nova_group")
+            ecoscore = product.get("ecoscore_grade", "").upper()
 
-            description_parts = []
-            if generic_name and generic_name.lower() != name.lower():
-                description_parts.append(generic_name)
-            if category:
-                description_parts.append(category)
-            if quantity:
-                description_parts.append(quantity)
-            if nutriscore_text:
-                description_parts.append(nutriscore_text)
+            # Nutrition facts
+            nutriments = product.get("nutriments", {})
+            nutrition = {
+                "energy_kcal": nutriments.get("energy-kcal_100g"),
+                "fat": nutriments.get("fat_100g"),
+                "saturated_fat": nutriments.get("saturated-fat_100g"),
+                "carbs": nutriments.get("carbohydrates_100g"),
+                "sugars": nutriments.get("sugars_100g"),
+                "proteins": nutriments.get("proteins_100g"),
+                "salt": nutriments.get("salt_100g"),
+                "fiber": nutriments.get("fiber_100g"),
+            }
+            # Remove None values
+            nutrition = {k: v for k, v in nutrition.items() if v is not None}
 
-            local_equivalent = ". ".join(description_parts) if description_parts else ""
-            usage = f"Ingredients: {ingredients}{'...' if len(ingredients) >= 300 else ''}" if ingredients else ""
+            # Additional info
+            serving_size = product.get("serving_size", "")
+            labels = product.get("labels", "")
+            origins = product.get("origins", "")
+            packaging = product.get("packaging", "")
+            stores = product.get("stores", "")
+
+            # Traces (may contain)
+            traces_tags = product.get("traces_tags", [])
+            traces = []
+            for tag in traces_tags:
+                key = OFF_ALLERGEN_MAP.get(tag.lower())
+                if key and key not in [a for a in allergens]:
+                    traces.append(key)
+
+            # Product image
+            image_url = product.get("image_front_url") or product.get("image_url", "")
 
             return {
                 "gtin": barcode,
@@ -236,12 +256,24 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
                 "lang": target_lang,
                 "name": translated_name,
                 "originalName": original_name,
-                "localEquivalent": local_equivalent,
-                "usage": usage,
                 "brand": translated_brand,
                 "originalBrand": original_brand,
+                "genericName": generic_name,
                 "category": category,
+                "quantity": quantity,
+                "servingSize": serving_size,
+                "ingredients": ingredients,
                 "allergens": localize_allergens(allergens, target_lang),
+                "traces": localize_allergens(traces, target_lang),
+                "nutriScore": nutriscore if nutriscore and nutriscore not in ["", "UNKNOWN", "NOT-APPLICABLE"] else None,
+                "novaGroup": nova_group,
+                "ecoScore": ecoscore if ecoscore and ecoscore not in ["", "UNKNOWN", "NOT-APPLICABLE"] else None,
+                "nutrition": nutrition,
+                "labels": labels,
+                "origins": origins,
+                "packaging": packaging,
+                "stores": stores,
+                "imageUrl": image_url,
                 "source": "OPEN_FOOD_FACTS",
                 "verified": False,
                 "disclaimer": DISCLAIMER.get(target_lang, DISCLAIMER[DEFAULT_LANG]),

@@ -12,19 +12,19 @@ const LANG_NAMES = {
 
 // UI string table (the app shell itself is localized too, not just product data).
 const UI = {
-  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", contains: "Contains", none: "No major allergens listed", equiv: "What is it?", usage: "How to use", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning" },
-  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", contains: "Enthält", none: "Keine relevanten Allergene gelistet", equiv: "Was ist das?", usage: "Verwendung", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten" },
-  fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", contains: "Contient", none: "Aucun allergène majeur signalé", equiv: "Qu'est-ce que c'est ?", usage: "Utilisation", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan" },
-  es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", contains: "Contiene", none: "Sin alérgenos principales listados", equiv: "¿Qué es?", usage: "Cómo usar", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo" },
-  zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", contains: "含有", none: "未列出主要过敏原", equiv: "这是什么？", usage: "食用方法", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描" },
-  fi: { hint: "Skannaa QR-koodi tai viivakoodi", lookup: "Hae", manual: "tai kirjoita koodi (esim. SKF-0001 tai viivakoodi)", back: "Skannaa toinen", source_v: "Vahvistettu tieto (GS1)", source_c: "Yhteisön tieto", allergens: "Allergeenit", contains: "Sisältää", none: "Ei merkittäviä allergeeneja", equiv: "Mikä tämä on?", usage: "Käyttöohje", notfound: "Tuotetta ei löytynyt tällä koodilla.", footer: "ScanFi · Demo · Tarkista aina pakkaus.", startScan: "Aloita skannaus" },
-  sv: { hint: "Skanna QR-kod eller streckkod", lookup: "Sök", manual: "eller skriv en kod (t.ex. SKF-0001 eller streckkod)", back: "Skanna igen", source_v: "Verifierad data (GS1)", source_c: "Community-data", allergens: "Allergener", contains: "Innehåller", none: "Inga allergener listade", equiv: "Vad är det?", usage: "Användning", notfound: "Ingen produkt hittades för den koden.", footer: "ScanFi · Demo · Kontrollera alltid förpackningen.", startScan: "Börja skanna" },
-  ru: { hint: "Сканируйте QR-код или штрих-код", lookup: "Найти", manual: "или введите код (напр. SKF-0001 или штрих-код)", back: "Сканировать ещё", source_v: "Проверенные данные (GS1)", source_c: "Данные сообщества", allergens: "Аллергены", contains: "Содержит", none: "Аллергены не указаны", equiv: "Что это?", usage: "Применение", notfound: "Продукт не найден.", footer: "ScanFi · Демо · Всегда проверяйте упаковку.", startScan: "Начать сканирование" },
-  ja: { hint: "QRコードまたはバーコードをスキャン", lookup: "検索", manual: "またはコードを入力（例：SKF-0001またはバーコード）", back: "もう一度スキャン", source_v: "認証済みデータ (GS1)", source_c: "コミュニティデータ", allergens: "アレルゲン", contains: "含有", none: "主要アレルゲンなし", equiv: "これは何？", usage: "使用方法", notfound: "商品が見つかりません。", footer: "ScanFi · デモ · 必ずパッケージを確認してください。", startScan: "スキャン開始" },
-  it: { hint: "Scansiona QR code o codice a barre", lookup: "Cerca", manual: "o inserisci un codice (es. SKF-0001 o codice a barre)", back: "Scansiona altro", source_v: "Dati verificati (GS1)", source_c: "Dati della community", allergens: "Allergeni", contains: "Contiene", none: "Nessun allergene principale", equiv: "Cos'è?", usage: "Come usare", notfound: "Nessun prodotto trovato per questo codice.", footer: "ScanFi · Demo · Controlla sempre la confezione.", startScan: "Inizia scansione" },
-  pt: { hint: "Digitalize o código QR ou código de barras", lookup: "Pesquisar", manual: "ou digite um código (ex. SKF-0001 ou código de barras)", back: "Digitalizar outro", source_v: "Dados verificados (GS1)", source_c: "Dados da comunidade", allergens: "Alergénios", contains: "Contém", none: "Sem alergénios principais", equiv: "O que é?", usage: "Como usar", notfound: "Nenhum produto encontrado para este código.", footer: "ScanFi · Demo · Verifique sempre a embalagem.", startScan: "Iniciar digitalização" },
-  nl: { hint: "Scan QR-code of barcode", lookup: "Zoeken", manual: "of typ een code (bijv. SKF-0001 of barcode)", back: "Opnieuw scannen", source_v: "Geverifieerde gegevens (GS1)", source_c: "Community-gegevens", allergens: "Allergenen", contains: "Bevat", none: "Geen allergenen vermeld", equiv: "Wat is het?", usage: "Gebruik", notfound: "Geen product gevonden voor deze code.", footer: "ScanFi · Demo · Controleer altijd de verpakking.", startScan: "Start scannen" },
-  pl: { hint: "Zeskanuj kod QR lub kod kreskowy", lookup: "Szukaj", manual: "lub wpisz kod (np. SKF-0001 lub kod kreskowy)", back: "Skanuj ponownie", source_v: "Zweryfikowane dane (GS1)", source_c: "Dane społeczności", allergens: "Alergeny", contains: "Zawiera", none: "Brak alergenów", equiv: "Co to jest?", usage: "Jak używać", notfound: "Nie znaleziono produktu.", footer: "ScanFi · Demo · Zawsze sprawdzaj opakowanie.", startScan: "Rozpocznij skanowanie" },
+  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", traces: "May contain", none: "No major allergens listed", ingredients: "Ingredients", nutrition: "Nutrition (per 100g)", calories: "Calories", fat: "Fat", saturatedFat: "Saturated fat", carbs: "Carbs", sugars: "Sugars", proteins: "Protein", salt: "Salt", fiber: "Fiber", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning" },
+  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", traces: "Kann enthalten", none: "Keine relevanten Allergene gelistet", ingredients: "Zutaten", nutrition: "Nährwerte (pro 100g)", calories: "Kalorien", fat: "Fett", saturatedFat: "Gesättigte Fettsäuren", carbs: "Kohlenhydrate", sugars: "Zucker", proteins: "Eiweiß", salt: "Salz", fiber: "Ballaststoffe", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten" },
+  fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", traces: "Peut contenir", none: "Aucun allergène majeur signalé", ingredients: "Ingrédients", nutrition: "Nutrition (pour 100g)", calories: "Calories", fat: "Matières grasses", saturatedFat: "Graisses saturées", carbs: "Glucides", sugars: "Sucres", proteins: "Protéines", salt: "Sel", fiber: "Fibres", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan" },
+  es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", traces: "Puede contener", none: "Sin alérgenos principales listados", ingredients: "Ingredientes", nutrition: "Nutrición (por 100g)", calories: "Calorías", fat: "Grasas", saturatedFat: "Grasas saturadas", carbs: "Carbohidratos", sugars: "Azúcares", proteins: "Proteínas", salt: "Sal", fiber: "Fibra", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo" },
+  zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", traces: "可能含有", none: "未列出主要过敏原", ingredients: "成分", nutrition: "营养成分 (每100克)", calories: "热量", fat: "脂肪", saturatedFat: "饱和脂肪", carbs: "碳水化合物", sugars: "糖", proteins: "蛋白质", salt: "盐", fiber: "纤维", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描" },
+  fi: { hint: "Skannaa QR-koodi tai viivakoodi", lookup: "Hae", manual: "tai kirjoita koodi (esim. SKF-0001 tai viivakoodi)", back: "Skannaa toinen", source_v: "Vahvistettu tieto (GS1)", source_c: "Yhteisön tieto", allergens: "Allergeenit", traces: "Saattaa sisältää", none: "Ei merkittäviä allergeeneja", ingredients: "Ainesosat", nutrition: "Ravintosisältö (per 100g)", calories: "Kalorit", fat: "Rasva", saturatedFat: "Tyydyttynyt rasva", carbs: "Hiilihydraatit", sugars: "Sokerit", proteins: "Proteiini", salt: "Suola", fiber: "Kuitu", notfound: "Tuotetta ei löytynyt tällä koodilla.", footer: "ScanFi · Demo · Tarkista aina pakkaus.", startScan: "Aloita skannaus" },
+  sv: { hint: "Skanna QR-kod eller streckkod", lookup: "Sök", manual: "eller skriv en kod (t.ex. SKF-0001 eller streckkod)", back: "Skanna igen", source_v: "Verifierad data (GS1)", source_c: "Community-data", allergens: "Allergener", traces: "Kan innehålla", none: "Inga allergener listade", ingredients: "Ingredienser", nutrition: "Näringsvärde (per 100g)", calories: "Kalorier", fat: "Fett", saturatedFat: "Mättat fett", carbs: "Kolhydrater", sugars: "Socker", proteins: "Protein", salt: "Salt", fiber: "Fiber", notfound: "Ingen produkt hittades för den koden.", footer: "ScanFi · Demo · Kontrollera alltid förpackningen.", startScan: "Börja skanna" },
+  ru: { hint: "Сканируйте QR-код или штрих-код", lookup: "Найти", manual: "или введите код (напр. SKF-0001 или штрих-код)", back: "Сканировать ещё", source_v: "Проверенные данные (GS1)", source_c: "Данные сообщества", allergens: "Аллергены", traces: "Может содержать", none: "Аллергены не указаны", ingredients: "Состав", nutrition: "Пищевая ценность (на 100г)", calories: "Калории", fat: "Жиры", saturatedFat: "Насыщенные жиры", carbs: "Углеводы", sugars: "Сахар", proteins: "Белки", salt: "Соль", fiber: "Клетчатка", notfound: "Продукт не найден.", footer: "ScanFi · Демо · Всегда проверяйте упаковку.", startScan: "Начать сканирование" },
+  ja: { hint: "QRコードまたはバーコードをスキャン", lookup: "検索", manual: "またはコードを入力（例：SKF-0001またはバーコード）", back: "もう一度スキャン", source_v: "認証済みデータ (GS1)", source_c: "コミュニティデータ", allergens: "アレルゲン", traces: "含む可能性", none: "主要アレルゲンなし", ingredients: "原材料", nutrition: "栄養成分 (100gあたり)", calories: "カロリー", fat: "脂質", saturatedFat: "飽和脂肪酸", carbs: "炭水化物", sugars: "糖質", proteins: "タンパク質", salt: "塩分", fiber: "食物繊維", notfound: "商品が見つかりません。", footer: "ScanFi · デモ · 必ずパッケージを確認してください。", startScan: "スキャン開始" },
+  it: { hint: "Scansiona QR code o codice a barre", lookup: "Cerca", manual: "o inserisci un codice (es. SKF-0001 o codice a barre)", back: "Scansiona altro", source_v: "Dati verificati (GS1)", source_c: "Dati della community", allergens: "Allergeni", traces: "Può contenere", none: "Nessun allergene principale", ingredients: "Ingredienti", nutrition: "Valori nutrizionali (per 100g)", calories: "Calorie", fat: "Grassi", saturatedFat: "Grassi saturi", carbs: "Carboidrati", sugars: "Zuccheri", proteins: "Proteine", salt: "Sale", fiber: "Fibre", notfound: "Nessun prodotto trovato per questo codice.", footer: "ScanFi · Demo · Controlla sempre la confezione.", startScan: "Inizia scansione" },
+  pt: { hint: "Digitalize o código QR ou código de barras", lookup: "Pesquisar", manual: "ou digite um código (ex. SKF-0001 ou código de barras)", back: "Digitalizar outro", source_v: "Dados verificados (GS1)", source_c: "Dados da comunidade", allergens: "Alergénios", traces: "Pode conter", none: "Sem alergénios principais", ingredients: "Ingredientes", nutrition: "Nutrição (por 100g)", calories: "Calorias", fat: "Gordura", saturatedFat: "Gordura saturada", carbs: "Carboidratos", sugars: "Açúcares", proteins: "Proteínas", salt: "Sal", fiber: "Fibra", notfound: "Nenhum produto encontrado para este código.", footer: "ScanFi · Demo · Verifique sempre a embalagem.", startScan: "Iniciar digitalização" },
+  nl: { hint: "Scan QR-code of barcode", lookup: "Zoeken", manual: "of typ een code (bijv. SKF-0001 of barcode)", back: "Opnieuw scannen", source_v: "Geverifieerde gegevens (GS1)", source_c: "Community-gegevens", allergens: "Allergenen", traces: "Kan bevatten", none: "Geen allergenen vermeld", ingredients: "Ingrediënten", nutrition: "Voedingswaarde (per 100g)", calories: "Calorieën", fat: "Vet", saturatedFat: "Verzadigd vet", carbs: "Koolhydraten", sugars: "Suikers", proteins: "Eiwitten", salt: "Zout", fiber: "Vezels", notfound: "Geen product gevonden voor deze code.", footer: "ScanFi · Demo · Controleer altijd de verpakking.", startScan: "Start scannen" },
+  pl: { hint: "Zeskanuj kod QR lub kod kreskowy", lookup: "Szukaj", manual: "lub wpisz kod (np. SKF-0001 lub kod kreskowy)", back: "Skanuj ponownie", source_v: "Zweryfikowane dane (GS1)", source_c: "Dane społeczności", allergens: "Alergeny", traces: "Może zawierać", none: "Brak alergenów", ingredients: "Składniki", nutrition: "Wartości odżywcze (na 100g)", calories: "Kalorie", fat: "Tłuszcz", saturatedFat: "Tłuszcz nasycony", carbs: "Węglowodany", sugars: "Cukry", proteins: "Białko", salt: "Sól", fiber: "Błonnik", notfound: "Nie znaleziono produktu.", footer: "ScanFi · Demo · Zawsze sprawdzaj opakowanie.", startScan: "Rozpocznij skanowanie" },
 };
 
 function detectLang() {
@@ -84,15 +84,6 @@ function renderProduct(p) {
   const badgeClass = p.verified ? "verified" : "community";
   const badgeText = p.verified ? t.source_v : t.source_c;
 
-  let allergensHtml;
-  if (p.allergens && p.allergens.length) {
-    allergensHtml = `<div class="allergens">` +
-      p.allergens.map((a) => `<span class="allergen-chip">${escapeHtml(a.label)}</span>`).join("") +
-      `</div>`;
-  } else {
-    allergensHtml = `<div class="allergen-none">✓ ${t.none}</div>`;
-  }
-
   // Show original name with translation if different
   const origName = p.originalName || p.name;
   const transName = p.name;
@@ -107,18 +98,91 @@ function renderProduct(p) {
     ? `${escapeHtml(origBrand)} <span class="translated-brand">(${escapeHtml(transBrand)})</span>`
     : escapeHtml(origBrand);
 
+  // Product image
+  const imageHtml = p.imageUrl
+    ? `<img src="${escapeHtml(p.imageUrl)}" alt="${escapeHtml(origName)}" class="product-image">`
+    : '';
+
+  // Quantity and generic name
+  let infoLine = [];
+  if (p.quantity) infoLine.push(p.quantity);
+  if (p.genericName && p.genericName.toLowerCase() !== origName.toLowerCase()) infoLine.push(p.genericName);
+  const infoHtml = infoLine.length ? `<div class="info-line">${escapeHtml(infoLine.join(' · '))}</div>` : '';
+
+  // Scores (Nutri-Score, NOVA, Eco-Score)
+  let scoresHtml = '';
+  if (p.nutriScore || p.novaGroup || p.ecoScore) {
+    let scores = [];
+    if (p.nutriScore) scores.push(`<span class="score nutri-${p.nutriScore.toLowerCase()}">Nutri-Score ${p.nutriScore}</span>`);
+    if (p.novaGroup) scores.push(`<span class="score nova-${p.novaGroup}">NOVA ${p.novaGroup}</span>`);
+    if (p.ecoScore) scores.push(`<span class="score eco-${p.ecoScore.toLowerCase()}">Eco-Score ${p.ecoScore}</span>`);
+    scoresHtml = `<div class="scores">${scores.join('')}</div>`;
+  }
+
+  // Allergens
+  let allergensHtml = '';
+  if (p.allergens && p.allergens.length) {
+    allergensHtml = `<div class="section-label">${t.allergens}</div><div class="allergens">` +
+      p.allergens.map((a) => `<span class="allergen-chip">${escapeHtml(a.label)}</span>`).join("") +
+      `</div>`;
+  }
+
+  // Traces (may contain)
+  let tracesHtml = '';
+  if (p.traces && p.traces.length) {
+    tracesHtml = `<div class="section-label">${t.traces}</div><div class="traces">` +
+      p.traces.map((a) => `<span class="trace-chip">${escapeHtml(a.label)}</span>`).join("") +
+      `</div>`;
+  }
+
+  // No allergens message
+  if (!allergensHtml && !tracesHtml) {
+    allergensHtml = `<div class="section-label">${t.allergens}</div><div class="allergen-none">✓ ${t.none}</div>`;
+  }
+
+  // Ingredients
+  const ingredientsHtml = p.ingredients
+    ? `<div class="section-label">${t.ingredients}</div><p class="ingredients-text">${escapeHtml(p.ingredients)}</p>`
+    : '';
+
+  // Nutrition facts
+  let nutritionHtml = '';
+  if (p.nutrition && Object.keys(p.nutrition).length > 0) {
+    const n = p.nutrition;
+    let rows = [];
+    if (n.energy_kcal !== undefined) rows.push(`<tr><td>${t.calories}</td><td>${n.energy_kcal} kcal</td></tr>`);
+    if (n.fat !== undefined) rows.push(`<tr><td>${t.fat}</td><td>${n.fat}g</td></tr>`);
+    if (n.saturated_fat !== undefined) rows.push(`<tr><td class="indent">${t.saturatedFat}</td><td>${n.saturated_fat}g</td></tr>`);
+    if (n.carbs !== undefined) rows.push(`<tr><td>${t.carbs}</td><td>${n.carbs}g</td></tr>`);
+    if (n.sugars !== undefined) rows.push(`<tr><td class="indent">${t.sugars}</td><td>${n.sugars}g</td></tr>`);
+    if (n.proteins !== undefined) rows.push(`<tr><td>${t.proteins}</td><td>${n.proteins}g</td></tr>`);
+    if (n.salt !== undefined) rows.push(`<tr><td>${t.salt}</td><td>${n.salt}g</td></tr>`);
+    if (n.fiber !== undefined) rows.push(`<tr><td>${t.fiber}</td><td>${n.fiber}g</td></tr>`);
+
+    if (rows.length) {
+      nutritionHtml = `<div class="section-label">${t.nutrition}</div><table class="nutrition-table">${rows.join('')}</table>`;
+    }
+  }
+
+  // Labels
+  const labelsHtml = p.labels
+    ? `<div class="labels">${escapeHtml(p.labels)}</div>`
+    : '';
+
   $("productCard").innerHTML = `
     <span class="badge ${badgeClass}">${p.verified ? "✓" : "ℹ"} ${badgeText}</span>
+    ${imageHtml}
     ${nameHtml}
     <div class="brand-line">${brandHtml}</div>
+    ${infoHtml}
+    ${scoresHtml}
+    ${labelsHtml}
 
-    <div class="section-label">${t.equiv}</div>
-    <p class="equiv">${escapeHtml(p.localEquivalent)}</p>
-
-    ${p.usage ? `<div class="section-label">${t.usage}</div><p class="usage">${escapeHtml(p.usage)}</p>` : ""}
-
-    <div class="section-label">${t.allergens}</div>
     ${allergensHtml}
+    ${tracesHtml}
+
+    ${ingredientsHtml}
+    ${nutritionHtml}
 
     <p class="disclaimer">${escapeHtml(p.disclaimer)}</p>
   `;

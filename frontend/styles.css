@@ -291,6 +291,109 @@ html, body {
   font-size: 0.95rem;
 }
 
+/* Product image */
+.product-image {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.5rem auto 1rem;
+  display: block;
+}
+
+/* Info line (quantity, generic name) */
+.info-line {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Scores (Nutri-Score, NOVA, Eco-Score) */
+.scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.score {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.nutri-a { background: #1e8f4e; color: #fff; }
+.nutri-b { background: #85bb2f; color: #fff; }
+.nutri-c { background: #fecb02; color: #000; }
+.nutri-d { background: #ee8100; color: #fff; }
+.nutri-e { background: #e63e11; color: #fff; }
+
+.nova-1 { background: #1e8f4e; color: #fff; }
+.nova-2 { background: #85bb2f; color: #fff; }
+.nova-3 { background: #ee8100; color: #fff; }
+.nova-4 { background: #e63e11; color: #fff; }
+
+.eco-a { background: #1e8f4e; color: #fff; }
+.eco-b { background: #85bb2f; color: #fff; }
+.eco-c { background: #fecb02; color: #000; }
+.eco-d { background: #ee8100; color: #fff; }
+.eco-e { background: #e63e11; color: #fff; }
+
+/* Traces */
+.traces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.trace-chip {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  background: #fff3e0;
+  color: var(--community);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Ingredients */
+.ingredients-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* Nutrition table */
+.nutrition-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.nutrition-table td {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nutrition-table td:last-child {
+  text-align: right;
+  font-weight: 500;
+}
+
+.nutrition-table td.indent {
+  padding-left: 1rem;
+  color: var(--text-muted);
+}
+
+/* Labels */
+.labels {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
 .disclaimer {
   margin-top: 1.5rem;
   padding-top: 1rem;
