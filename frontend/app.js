@@ -164,6 +164,19 @@ function renderProduct(p) {
     }
   }
 
+  // Dietary badges (halal, kosher, vegan, vegetarian)
+  let dietaryHtml = '';
+  if (p.dietary) {
+    let badges = [];
+    if (p.dietary.halal) badges.push(`<span class="dietary-badge halal">✓ Halal</span>`);
+    if (p.dietary.kosher) badges.push(`<span class="dietary-badge kosher">✓ Kosher</span>`);
+    if (p.dietary.vegan) badges.push(`<span class="dietary-badge vegan">✓ Vegan</span>`);
+    if (p.dietary.vegetarian && !p.dietary.vegan) badges.push(`<span class="dietary-badge vegetarian">✓ Vegetarian</span>`);
+    if (badges.length) {
+      dietaryHtml = `<div class="dietary-badges">${badges.join('')}</div>`;
+    }
+  }
+
   // Labels
   const labelsHtml = p.labels
     ? `<div class="labels">${escapeHtml(p.labels)}</div>`
@@ -176,6 +189,7 @@ function renderProduct(p) {
     <div class="brand-line">${brandHtml}</div>
     ${infoHtml}
     ${scoresHtml}
+    ${dietaryHtml}
     ${labelsHtml}
 
     ${allergensHtml}

@@ -235,9 +235,18 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
             # Additional info
             serving_size = product.get("serving_size", "")
             labels = product.get("labels", "")
+            labels_tags = product.get("labels_tags", [])
             origins = product.get("origins", "")
             packaging = product.get("packaging", "")
             stores = product.get("stores", "")
+
+            # Dietary flags from labels
+            dietary = {
+                "halal": any("halal" in tag.lower() for tag in labels_tags),
+                "kosher": any("kosher" in tag.lower() for tag in labels_tags),
+                "vegan": any("vegan" in tag.lower() for tag in labels_tags),
+                "vegetarian": any("vegetarian" in tag.lower() for tag in labels_tags),
+            }
 
             # Traces (may contain)
             traces_tags = product.get("traces_tags", [])
@@ -270,6 +279,7 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
                 "ecoScore": ecoscore if ecoscore and ecoscore not in ["", "UNKNOWN", "NOT-APPLICABLE"] else None,
                 "nutrition": nutrition,
                 "labels": labels,
+                "dietary": dietary,
                 "origins": origins,
                 "packaging": packaging,
                 "stores": stores,
