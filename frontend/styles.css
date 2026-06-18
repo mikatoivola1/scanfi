@@ -463,6 +463,47 @@ html, body {
   line-height: 1.4;
 }
 
+/* Enrich button (Get more info) */
+.enrich-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.enrich-btn:hover {
+  opacity: 0.9;
+}
+
+.enrich-btn:active {
+  transform: scale(0.98);
+}
+
+.enrich-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Enriched data badge */
+.enriched-badge {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #e3f2fd;
+  color: #1565c0;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 /* Error box */
 .error {
   background: #ffebee;

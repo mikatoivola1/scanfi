@@ -78,12 +78,12 @@ const LANG_NAMES = {
 
 // UI string table (the app shell itself is localized too, not just product data).
 const UI = {
-  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", traces: "May contain", none: "No major allergens listed", ingredients: "Ingredients", nutrition: "Nutrition (per 100g)", calories: "Calories", fat: "Fat", saturatedFat: "Saturated fat", carbs: "Carbs", sugars: "Sugars", proteins: "Protein", salt: "Salt", fiber: "Fiber", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning" },
-  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", traces: "Kann enthalten", none: "Keine relevanten Allergene gelistet", ingredients: "Zutaten", nutrition: "Nährwerte (pro 100g)", calories: "Kalorien", fat: "Fett", saturatedFat: "Gesättigte Fettsäuren", carbs: "Kohlenhydrate", sugars: "Zucker", proteins: "Eiweiß", salt: "Salz", fiber: "Ballaststoffe", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten" },
+  en: { hint: "Scan QR code or product barcode", lookup: "Look up", manual: "or type a code (e.g. SKF-0001 or barcode)", back: "Scan another", source_v: "Verified data (GS1)", source_c: "Community data", allergens: "Allergens", traces: "May contain", none: "No major allergens listed", ingredients: "Ingredients", nutrition: "Nutrition (per 100g)", calories: "Calories", fat: "Fat", saturatedFat: "Saturated fat", carbs: "Carbs", sugars: "Sugars", proteins: "Protein", salt: "Salt", fiber: "Fiber", notfound: "No product found for that code.", footer: "ScanFi · Demo build · Always check the packaging.", startScan: "Start Scanning", getMore: "Get more info", loading: "Loading...", enriched: "Additional data from Edamam" },
+  de: { hint: "QR-Code oder Produkt-Barcode scannen", lookup: "Suchen", manual: "oder Code eingeben (z.B. SKF-0001 oder Barcode)", back: "Erneut scannen", source_v: "Geprüfte Daten (GS1)", source_c: "Community-Daten", allergens: "Allergene", traces: "Kann enthalten", none: "Keine relevanten Allergene gelistet", ingredients: "Zutaten", nutrition: "Nährwerte (pro 100g)", calories: "Kalorien", fat: "Fett", saturatedFat: "Gesättigte Fettsäuren", carbs: "Kohlenhydrate", sugars: "Zucker", proteins: "Eiweiß", salt: "Salz", fiber: "Ballaststoffe", notfound: "Kein Produkt für diesen Code gefunden.", footer: "ScanFi · Demo · Verpackung stets prüfen.", startScan: "Scannen starten", getMore: "Mehr Infos", loading: "Laden...", enriched: "Zusätzliche Daten von Edamam" },
   fr: { hint: "Scannez le QR code ou le code-barres", lookup: "Rechercher", manual: "ou saisissez un code (ex. SKF-0001 ou code-barres)", back: "Scanner à nouveau", source_v: "Données vérifiées (GS1)", source_c: "Données communautaires", allergens: "Allergènes", traces: "Peut contenir", none: "Aucun allergène majeur signalé", ingredients: "Ingrédients", nutrition: "Nutrition (pour 100g)", calories: "Calories", fat: "Matières grasses", saturatedFat: "Graisses saturées", carbs: "Glucides", sugars: "Sucres", proteins: "Protéines", salt: "Sel", fiber: "Fibres", notfound: "Aucun produit trouvé pour ce code.", footer: "ScanFi · Démo · Vérifiez toujours l'emballage.", startScan: "Lancer le scan" },
   es: { hint: "Escanea el código QR o el código de barras", lookup: "Buscar", manual: "o escribe un código (ej. SKF-0001 o código de barras)", back: "Escanear otro", source_v: "Datos verificados (GS1)", source_c: "Datos de la comunidad", allergens: "Alérgenos", traces: "Puede contener", none: "Sin alérgenos principales listados", ingredients: "Ingredientes", nutrition: "Nutrición (por 100g)", calories: "Calorías", fat: "Grasas", saturatedFat: "Grasas saturadas", carbs: "Carbohidratos", sugars: "Azúcares", proteins: "Proteínas", salt: "Sal", fiber: "Fibra", notfound: "No se encontró producto para ese código.", footer: "ScanFi · Demo · Comprueba siempre el envase.", startScan: "Iniciar escaneo" },
   zh: { hint: "扫描二维码或产品条形码", lookup: "查询", manual: "或输入代码（如 SKF-0001 或条形码）", back: "再次扫描", source_v: "已验证数据 (GS1)", source_c: "社区数据", allergens: "过敏原", traces: "可能含有", none: "未列出主要过敏原", ingredients: "成分", nutrition: "营养成分 (每100克)", calories: "热量", fat: "脂肪", saturatedFat: "饱和脂肪", carbs: "碳水化合物", sugars: "糖", proteins: "蛋白质", salt: "盐", fiber: "纤维", notfound: "未找到该代码对应的产品。", footer: "ScanFi · 演示版 · 请务必查看包装。", startScan: "开始扫描" },
-  fi: { hint: "Skannaa QR-koodi tai viivakoodi", lookup: "Hae", manual: "tai kirjoita koodi (esim. SKF-0001 tai viivakoodi)", back: "Skannaa toinen", source_v: "Vahvistettu tieto (GS1)", source_c: "Yhteisön tieto", allergens: "Allergeenit", traces: "Saattaa sisältää", none: "Ei merkittäviä allergeeneja", ingredients: "Ainesosat", nutrition: "Ravintosisältö (per 100g)", calories: "Kalorit", fat: "Rasva", saturatedFat: "Tyydyttynyt rasva", carbs: "Hiilihydraatit", sugars: "Sokerit", proteins: "Proteiini", salt: "Suola", fiber: "Kuitu", notfound: "Tuotetta ei löytynyt tällä koodilla.", footer: "ScanFi · Demo · Tarkista aina pakkaus.", startScan: "Aloita skannaus" },
+  fi: { hint: "Skannaa QR-koodi tai viivakoodi", lookup: "Hae", manual: "tai kirjoita koodi (esim. SKF-0001 tai viivakoodi)", back: "Skannaa toinen", source_v: "Vahvistettu tieto (GS1)", source_c: "Yhteisön tieto", allergens: "Allergeenit", traces: "Saattaa sisältää", none: "Ei merkittäviä allergeeneja", ingredients: "Ainesosat", nutrition: "Ravintosisältö (per 100g)", calories: "Kalorit", fat: "Rasva", saturatedFat: "Tyydyttynyt rasva", carbs: "Hiilihydraatit", sugars: "Sokerit", proteins: "Proteiini", salt: "Suola", fiber: "Kuitu", notfound: "Tuotetta ei löytynyt tällä koodilla.", footer: "ScanFi · Demo · Tarkista aina pakkaus.", startScan: "Aloita skannaus", getMore: "Hae lisätietoja", loading: "Ladataan...", enriched: "Lisätiedot Edamamista" },
   sv: { hint: "Skanna QR-kod eller streckkod", lookup: "Sök", manual: "eller skriv en kod (t.ex. SKF-0001 eller streckkod)", back: "Skanna igen", source_v: "Verifierad data (GS1)", source_c: "Community-data", allergens: "Allergener", traces: "Kan innehålla", none: "Inga allergener listade", ingredients: "Ingredienser", nutrition: "Näringsvärde (per 100g)", calories: "Kalorier", fat: "Fett", saturatedFat: "Mättat fett", carbs: "Kolhydrater", sugars: "Socker", proteins: "Protein", salt: "Salt", fiber: "Fiber", notfound: "Ingen produkt hittades för den koden.", footer: "ScanFi · Demo · Kontrollera alltid förpackningen.", startScan: "Börja skanna" },
   ru: { hint: "Сканируйте QR-код или штрих-код", lookup: "Найти", manual: "или введите код (напр. SKF-0001 или штрих-код)", back: "Сканировать ещё", source_v: "Проверенные данные (GS1)", source_c: "Данные сообщества", allergens: "Аллергены", traces: "Может содержать", none: "Аллергены не указаны", ingredients: "Состав", nutrition: "Пищевая ценность (на 100г)", calories: "Калории", fat: "Жиры", saturatedFat: "Насыщенные жиры", carbs: "Углеводы", sugars: "Сахар", proteins: "Белки", salt: "Соль", fiber: "Клетчатка", notfound: "Продукт не найден.", footer: "ScanFi · Демо · Всегда проверяйте упаковку.", startScan: "Начать сканирование" },
   ja: { hint: "QRコードまたはバーコードをスキャン", lookup: "検索", manual: "またはコードを入力（例：SKF-0001またはバーコード）", back: "もう一度スキャン", source_v: "認証済みデータ (GS1)", source_c: "コミュニティデータ", allergens: "アレルゲン", traces: "含む可能性", none: "主要アレルゲンなし", ingredients: "原材料", nutrition: "栄養成分 (100gあたり)", calories: "カロリー", fat: "脂質", saturatedFat: "飽和脂肪酸", carbs: "炭水化物", sugars: "糖質", proteins: "タンパク質", salt: "塩分", fiber: "食物繊維", notfound: "商品が見つかりません。", footer: "ScanFi · デモ · 必ずパッケージを確認してください。", startScan: "スキャン開始" },
@@ -102,8 +102,14 @@ function detectLang() {
 
 let lang = detectLang();
 let scanner = null;
+let currentProduct = null; // Store current product for enrichment
 
 const $ = (id) => document.getElementById(id);
+
+// Get UI string with fallback to English
+function t(key) {
+  return (UI[lang] && UI[lang][key]) || UI.en[key] || key;
+}
 
 function applyUiStrings() {
   const t = UI[lang];
@@ -264,6 +270,21 @@ function renderProduct(p) {
     ? `<div class="labels">${escapeHtml(p.labels)}</div>`
     : '';
 
+  // "Get more info" button (shown when data is weak and Edamam is available)
+  let enrichBtnHtml = '';
+  if (p.dataWeak && p.edamamAvailable && !p.enriched) {
+    enrichBtnHtml = `
+      <button id="enrichBtn" class="enrich-btn">
+        ${t('getMore')}
+      </button>
+    `;
+  }
+
+  // Enriched data badge
+  const enrichedBadgeHtml = p.enriched
+    ? `<div class="enriched-badge">✓ ${t('enriched')}</div>`
+    : '';
+
   $("productCard").innerHTML = `
     <span class="badge ${badgeClass}">${p.verified ? "✓" : "ℹ"} ${badgeText}</span>
     ${imageHtml}
@@ -280,12 +301,82 @@ function renderProduct(p) {
     ${ingredientsHtml}
     ${nutritionHtml}
 
+    ${enrichBtnHtml}
+    ${enrichedBadgeHtml}
+
     <p class="disclaimer">${escapeHtml(p.disclaimer)}</p>
   `;
+
+  // Store current product for enrichment
+  currentProduct = p;
+
+  // Add enrich button click handler
+  const enrichBtn = $("enrichBtn");
+  if (enrichBtn) {
+    enrichBtn.onclick = enrichProduct;
+  }
 
   $("scannerView").classList.add("hidden");
   $("productView").classList.remove("hidden");
   stopScanner();
+}
+
+async function enrichProduct() {
+  if (!currentProduct || !currentProduct.gtin) return;
+
+  const btn = $("enrichBtn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = t('loading');
+  }
+
+  try {
+    const res = await fetch(`/api/product/${encodeURIComponent(currentProduct.gtin)}/enrich?lang=${lang}`);
+    if (!res.ok) throw new Error("No additional data");
+
+    const edamamData = await res.json();
+
+    // Merge Edamam data into current product
+    if (edamamData.nutrition && Object.keys(edamamData.nutrition).length > 0) {
+      // Only add missing nutrition values
+      currentProduct.nutrition = currentProduct.nutrition || {};
+      for (const [key, value] of Object.entries(edamamData.nutrition)) {
+        if (currentProduct.nutrition[key] === undefined) {
+          currentProduct.nutrition[key] = value;
+        }
+      }
+    }
+
+    // Add dietary info if missing
+    if (edamamData.dietary) {
+      currentProduct.dietary = currentProduct.dietary || {};
+      for (const [key, value] of Object.entries(edamamData.dietary)) {
+        if (value && !currentProduct.dietary[key]) {
+          currentProduct.dietary[key] = value;
+        }
+      }
+    }
+
+    // Add image if missing
+    if (!currentProduct.imageUrl && edamamData.image) {
+      currentProduct.imageUrl = edamamData.image;
+    }
+
+    // Mark as enriched
+    currentProduct.enriched = true;
+    currentProduct.dataWeak = false;
+
+    // Re-render with merged data
+    renderProduct(currentProduct);
+
+  } catch (e) {
+    // Show error but keep the button
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = t('getMore');
+      btn.style.opacity = '0.5';
+    }
+  }
 }
 
 function showError(msg) {

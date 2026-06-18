@@ -2,14 +2,15 @@
 ScanFi backend — FastAPI service.
 
 Fetches product info from Open Food Facts, then auto-translates
-to the user's selected language.
+to the user's selected language. Falls back to Edamam for enrichment.
 
 Run:
-    pip install fastapi uvicorn httpx
+    pip install fastapi uvicorn httpx python-dotenv
     uvicorn app:app --reload --port 8000
 """
 
 import json
+import os
 from pathlib import Path
 
 import httpx
@@ -48,6 +49,12 @@ def _load_json(name: str) -> dict:
 
 
 ALLERGENS = _load_json("allergens.json")["allergens"]
+
+# ---- Edamam API Configuration ----
+# Sign up at https://developer.edamam.com/food-database-api for free API keys
+EDAMAM_APP_ID = os.environ.get("EDAMAM_APP_ID", "")
+EDAMAM_APP_KEY = os.environ.get("EDAMAM_APP_KEY", "")
+EDAMAM_API_URL = "https://api.edamam.com/api/food-database/v2/parser"
 
 app = FastAPI(title="ScanFi API", version="0.1.0")
 
@@ -293,9 +300,100 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
         return None
 
 
+async def fetch_from_edamam(barcode: str, target_lang: str) -> dict | None:
+    """Fetch product nutrition from Edamam Food Database API."""
+    if not EDAMAM_APP_ID or not EDAMAM_APP_KEY:
+        return None
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                EDAMAM_API_URL,
+                params={
+                    "app_id": EDAMAM_APP_ID,
+                    "app_key": EDAMAM_APP_KEY,
+                    "upc": barcode,
+                    "nutrition-type": "logging"
+                }
+            )
+
+            if response.status_code != 200:
+                return None
+
+            data = response.json()
+            hints = data.get("hints", [])
+
+            if not hints:
+                return None
+
+            # Get the first (best) match
+            food = hints[0].get("food", {})
+            nutrients = food.get("nutrients", {})
+
+            # Map Edamam nutrient keys to our format
+            nutrition = {}
+            if "ENERC_KCAL" in nutrients:
+                nutrition["energy_kcal"] = round(nutrients["ENERC_KCAL"], 1)
+            if "FAT" in nutrients:
+                nutrition["fat"] = round(nutrients["FAT"], 1)
+            if "FASAT" in nutrients:
+                nutrition["saturated_fat"] = round(nutrients["FASAT"], 1)
+            if "CHOCDF" in nutrients:
+                nutrition["carbs"] = round(nutrients["CHOCDF"], 1)
+            if "SUGAR" in nutrients:
+                nutrition["sugars"] = round(nutrients["SUGAR"], 1)
+            if "PROCNT" in nutrients:
+                nutrition["proteins"] = round(nutrients["PROCNT"], 1)
+            if "NA" in nutrients:
+                # Convert sodium (mg) to salt (g): salt = sodium * 2.5 / 1000
+                nutrition["salt"] = round(nutrients["NA"] * 2.5 / 1000, 2)
+            if "FIBTG" in nutrients:
+                nutrition["fiber"] = round(nutrients["FIBTG"], 1)
+
+            # Extract health labels (dietary info)
+            health_labels = food.get("healthLabels", [])
+            dietary = {
+                "vegan": "VEGAN" in health_labels,
+                "vegetarian": "VEGETARIAN" in health_labels,
+                "gluten_free": "GLUTEN_FREE" in health_labels,
+                "dairy_free": "DAIRY_FREE" in health_labels,
+            }
+
+            return {
+                "name": food.get("label", ""),
+                "brand": food.get("brand", ""),
+                "category": food.get("category", ""),
+                "image": food.get("image", ""),
+                "nutrition": nutrition,
+                "dietary": dietary,
+                "servingSize": food.get("servingSizes", [{}])[0].get("label", "") if food.get("servingSizes") else "",
+                "source": "EDAMAM",
+            }
+
+    except Exception as e:
+        print(f"Edamam API error: {e}")
+        return None
+
+
+def is_data_weak(product: dict) -> bool:
+    """Check if product data is weak/incomplete."""
+    # Check for missing critical nutrition data
+    nutrition = product.get("nutrition", {})
+    has_nutrition = len(nutrition) >= 3  # At least calories, fat, carbs
+
+    # Check for missing ingredients
+    has_ingredients = bool(product.get("ingredients"))
+
+    # Check for missing name
+    has_name = product.get("name") and product.get("name") != "Unknown Product"
+
+    return not (has_nutrition and has_ingredients and has_name)
+
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "languages": SUPPORTED_LANGS}
+    edamam_configured = bool(EDAMAM_APP_ID and EDAMAM_APP_KEY)
+    return {"status": "ok", "languages": SUPPORTED_LANGS, "edamam_available": edamam_configured}
 
 
 @app.get("/api/products")
@@ -315,9 +413,35 @@ async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
     if len(clean_code) >= 8:
         off_product = await fetch_from_open_food_facts(clean_code, lang)
         if off_product:
+            # Add flag indicating if data is weak (for "Get more info" button)
+            off_product["dataWeak"] = is_data_weak(off_product)
+            off_product["edamamAvailable"] = bool(EDAMAM_APP_ID and EDAMAM_APP_KEY)
             return JSONResponse(off_product)
 
     raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
+
+
+@app.get("/api/product/{code}/enrich")
+async def enrich_product(code: str, lang: str = Query(DEFAULT_LANG)):
+    """Enrich product data from Edamam API (backup source)."""
+    lang = normalize_lang(lang)
+    code = code.strip()
+
+    # Clean barcode
+    clean_code = ''.join(c for c in code if c.isdigit())
+
+    if not EDAMAM_APP_ID or not EDAMAM_APP_KEY:
+        raise HTTPException(status_code=503, detail="Edamam API not configured")
+
+    if len(clean_code) < 8:
+        raise HTTPException(status_code=400, detail="Invalid barcode")
+
+    edamam_data = await fetch_from_edamam(clean_code, lang)
+
+    if edamam_data:
+        return JSONResponse(edamam_data)
+
+    raise HTTPException(status_code=404, detail="No additional data found")
 
 
 # Serve the PWA
