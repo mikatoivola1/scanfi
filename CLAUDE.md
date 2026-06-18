@@ -1,5 +1,11 @@
 # ScanFi Project - Claude Code Memory
 
+## CRITICAL: DEPLOYMENT
+- **Production URL**: https://scanfi.onrender.com
+- **QR Code**: Points to production, NOT localhost
+- **ALL changes must be committed and pushed to GitHub** - Render auto-deploys from master
+- **NEVER test with localhost** - user tests on phone via QR code to production
+
 ## CRITICAL: DO NOT MODIFY
 The barcode scanner is working and fragile. **NEVER change these settings:**
 
