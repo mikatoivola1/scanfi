@@ -3,6 +3,53 @@
  * scans a shelf QR code, and renders localized product + allergen info.
  */
 
+// Scanner library state (lazy-loaded)
+let scannerLibLoaded = false;
+let scannerLibLoading = false;
+
+// Lazy-load the QR scanner library only when needed
+function loadScannerLib() {
+  return new Promise((resolve, reject) => {
+    if (scannerLibLoaded) {
+      resolve();
+      return;
+    }
+    if (scannerLibLoading) {
+      // Already loading, wait for it
+      const check = setInterval(() => {
+        if (scannerLibLoaded) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      return;
+    }
+    scannerLibLoading = true;
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";
+    script.onload = () => {
+      scannerLibLoaded = true;
+      scannerLibLoading = false;
+      resolve();
+    };
+    script.onerror = () => {
+      scannerLibLoading = false;
+      reject(new Error("Failed to load scanner library"));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+// Hide splash screen
+function hideSplash() {
+  const splash = document.getElementById("splash");
+  if (splash) {
+    splash.classList.add("hidden");
+    // Remove from DOM after transition
+    setTimeout(() => splash.remove(), 300);
+  }
+}
+
 const SUPPORTED = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"];
 const LANG_NAMES = {
   en: "English", de: "Deutsch", fr: "Français", es: "Español", zh: "中文",
@@ -241,8 +288,18 @@ function showStartButton() {
       </button>
     </div>
   `;
-  document.getElementById("startScanBtn").addEventListener("click", function() {
-    startScanner();
+  document.getElementById("startScanBtn").addEventListener("click", async function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    btn.innerHTML = '<span style="display:inline-flex;gap:4px;"><span class="dot-anim">.</span><span class="dot-anim">.</span><span class="dot-anim">.</span></span>';
+
+    try {
+      await loadScannerLib();
+      startScanner();
+    } catch (e) {
+      readerEl.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Failed to load scanner. Please refresh and try again.</p>";
+    }
   });
 }
 
@@ -340,9 +397,14 @@ buildLangSelect();
 applyUiStrings();
 buildSamples();
 
+// Hide splash and show app
+hideSplash();
+
 // If opened from a native-camera QR scan (deep link ?c=CODE), look it up immediately.
 const deepLink = new URLSearchParams(location.search).get("c");
 if (deepLink) {
+  // For deep links, pre-load scanner library in background
+  loadScannerLib().catch(() => {});
   lookup(deepLink.trim());
 } else {
   // Show start button instead of auto-starting scanner
