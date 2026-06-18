@@ -40,14 +40,10 @@ function loadScannerLib() {
   });
 }
 
-// Hide splash screen
-function hideSplash() {
-  const splash = document.getElementById("splash");
-  if (splash) {
-    splash.classList.add("hidden");
-    // Remove from DOM after transition
-    setTimeout(() => splash.remove(), 300);
-  }
+// Pre-fetch scanner library in background (non-blocking)
+function prefetchScannerLib() {
+  // Start loading after a short delay to not compete with critical resources
+  setTimeout(() => loadScannerLib().catch(() => {}), 100);
 }
 
 const SUPPORTED = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"];
@@ -397,9 +393,6 @@ buildLangSelect();
 applyUiStrings();
 buildSamples();
 
-// Hide splash and show app
-hideSplash();
-
 // If opened from a native-camera QR scan (deep link ?c=CODE), look it up immediately.
 const deepLink = new URLSearchParams(location.search).get("c");
 if (deepLink) {
@@ -410,8 +403,12 @@ if (deepLink) {
   // Show start button instead of auto-starting scanner
   if (document.readyState === "complete") {
     showStartButton();
+    prefetchScannerLib();
   } else {
-    window.addEventListener("load", showStartButton);
+    window.addEventListener("load", () => {
+      showStartButton();
+      prefetchScannerLib();
+    });
   }
 }
 
