@@ -1,4 +1,4 @@
-/* ScanFi PWA — front-end logic. v2.1
+/* ScanFi PWA — front-end logic. v2.2
  * Zero-friction: no login, no app store. Auto-detects phone language,
  * scans a shelf QR code, and renders localized product + allergen info.
  */
@@ -118,7 +118,7 @@ function applyUiStrings() {
   $("manualBtn").textContent = t.lookup;
   $("manualCode").placeholder = t.manual;
   $("backLabel").textContent = t.back;
-  $("footer").textContent = t.footer + " · v2.1";
+  $("footer").textContent = t.footer + " · v2.2";
   document.documentElement.lang = lang;
 }
 
@@ -276,8 +276,11 @@ function renderProduct(p) {
     ? `<div class="labels">${escapeHtml(p.labels)}</div>`
     : '';
 
-  // K-Ruoka button - link to full product details
-  const kruokaUrl = `https://www.k-ruoka.fi/haku?q=${p.gtin || p.shelfCode}`;
+  // K-Ruoka button - link to full product details (with Google Translate if not Finnish)
+  const kruokaBaseUrl = `https://www.k-ruoka.fi/haku?q=${p.gtin || p.shelfCode}`;
+  const kruokaUrl = (lang === 'fi')
+    ? kruokaBaseUrl
+    : `https://translate.google.com/translate?sl=fi&tl=${lang}&u=${encodeURIComponent(kruokaBaseUrl)}`;
   const kRuokaBtnHtml = `
     <div style="margin-top:1.5rem;text-align:center;">
       <a href="${escapeHtml(kruokaUrl)}" target="_blank" rel="noopener noreferrer"
