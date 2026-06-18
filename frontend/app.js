@@ -6,6 +6,7 @@
 // Scanner library state (lazy-loaded)
 let scannerLibLoaded = false;
 let scannerLibLoading = false;
+let cameraWarmedUp = false;
 
 // Lazy-load the QR scanner library only when needed
 function loadScannerLib() {
@@ -40,10 +41,32 @@ function loadScannerLib() {
   });
 }
 
+// Pre-warm camera if permission already granted (no prompt)
+function warmUpCamera() {
+  if (cameraWarmedUp || !navigator.mediaDevices || !navigator.permissions) return;
+  // Only warm up if permission already granted (don't trigger prompt)
+  navigator.permissions.query({ name: 'camera' })
+    .then(result => {
+      if (result.state === 'granted') {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+          .then(stream => {
+            cameraWarmedUp = true;
+            stream.getTracks().forEach(t => t.stop());
+          })
+          .catch(() => {});
+      }
+    })
+    .catch(() => {}); // Permissions API not supported, skip warmup
+}
+
 // Pre-fetch scanner library in background (non-blocking)
 function prefetchScannerLib() {
   // Start loading after a short delay to not compete with critical resources
-  setTimeout(() => loadScannerLib().catch(() => {}), 100);
+  setTimeout(() => {
+    loadScannerLib()
+      .then(() => warmUpCamera()) // After lib loads, warm up camera
+      .catch(() => {});
+  }, 100);
 }
 
 const SUPPORTED = ["en", "de", "fr", "es", "zh", "fi", "sv", "ru", "ja", "it", "pt", "nl", "pl"];
@@ -329,18 +352,20 @@ function startScanner() {
   scanner = new Html5Qrcode("reader");
 
   const config = {
-    fps: 10,
+    fps: 15,
     qrbox: { width: 250, height: 250 },
-    aspectRatio: 1.0,
     formatsToSupport: [
       Html5QrcodeSupportedFormats.QR_CODE,
       Html5QrcodeSupportedFormats.EAN_13,
       Html5QrcodeSupportedFormats.EAN_8,
-      Html5QrcodeSupportedFormats.CODE_128,
-      Html5QrcodeSupportedFormats.CODE_39,
       Html5QrcodeSupportedFormats.UPC_A,
       Html5QrcodeSupportedFormats.UPC_E
-    ]
+    ],
+    // Use native BarcodeDetector API if available (much faster)
+    experimentalFeatures: {
+      useBarCodeDetectorIfSupported: true
+    },
+    rememberLastUsedCamera: true
   };
 
   scanner.start(
