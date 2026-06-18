@@ -46,6 +46,7 @@ const config = {
 - Shows on EVERY product
 - Links to: `https://www.k-ruoka.fi/haku?q={barcode}`
 - Style: Orange gradient button with inline styles
+- **NO Google Translate wrapper** - K-Ruoka uses dynamic JavaScript that doesn't load through translate.google.com proxy. Users should use their browser's built-in translation instead.
 - Future: Apply for Kesko Developer Portal API access to fetch data directly
 
 ## Service Worker Strategy
@@ -82,6 +83,7 @@ Review this section before making changes.
 
 ### Mistake Log
 1. **2024-06-18: Localhost testing waste** - Spent hours testing locally while app is deployed on Render.com. User told me "I don't use localhost" but I didn't listen. ALWAYS push to GitHub and test on production URL.
+2. **2024-06-18: Google Translate proxy limitation** - Google Translate URL wrapper (`translate.google.com/translate?u=...`) doesn't work with dynamic JavaScript sites like K-Ruoka. The page loads but AJAX calls fail, showing "loading" forever. Browser built-in translation works better.
 
 ### Rules
 - THINK before acting
