@@ -76,3 +76,36 @@ const config = {
 ## Languages
 UI supports: en, de, fr, es, zh, fi, sv, ru, ja, it, pt, nl, pl
 Finnish (fi) is primary use case.
+
+## Quality Control Loop - LESSONS LEARNED
+Review this section before making changes.
+
+### Mistake Log
+1. **2024-06-18: Localhost testing waste** - Spent hours testing locally while app is deployed on Render.com. User told me "I don't use localhost" but I didn't listen. ALWAYS push to GitHub and test on production URL.
+
+### Rules
+- THINK before acting
+- ASK clarifying questions early, not after hours of work
+- When user says something doesn't work, first verify WHERE they're testing
+- All changes must be committed + pushed to see effect
+- Production URL: https://scanfi.onrender.com
+
+## Automated Testing
+Before asking user to test, run these checks:
+
+```bash
+# 1. Check syntax
+node --check frontend/app.js
+
+# 2. Test API responses
+curl -s "https://scanfi.onrender.com/api/product/6416453020337?lang=fi" | python -c "import sys,json; d=json.load(sys.stdin); print('FI:', d.get('name'))"
+curl -s "https://scanfi.onrender.com/api/product/6416453020337?lang=en" | python -c "import sys,json; d=json.load(sys.stdin); print('EN:', d.get('name'))"
+
+# 3. Check frontend is serving latest version
+curl -s "https://scanfi.onrender.com/app.js" | head -1
+
+# 4. Verify deployment completed (check for version string)
+curl -s "https://scanfi.onrender.com/app.js" | grep "v2\."
+```
+
+Run these AFTER pushing, BEFORE asking user to test.
