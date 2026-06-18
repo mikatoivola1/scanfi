@@ -1,6 +1,6 @@
 // ScanFi Service Worker — enables offline capability and PWA install
 
-const CACHE_NAME = 'scanfi-v18';
+const CACHE_NAME = 'scanfi-v19';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

@@ -285,10 +285,13 @@ function showStartButton() {
     </div>
   `;
   document.getElementById("startScanBtn").addEventListener("click", async function() {
-    const btn = this;
-    btn.disabled = true;
-    btn.style.opacity = "0.7";
-    btn.innerHTML = '<span style="display:inline-flex;gap:4px;"><span class="dot-anim">.</span><span class="dot-anim">.</span><span class="dot-anim">.</span></span>';
+    // Immediately show camera-ready state (instant visual feedback)
+    readerEl.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#38ada9;">
+        <div style="width:60px;height:60px;border:3px solid #38ada9;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;"></div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      </div>
+    `;
 
     try {
       await loadScannerLib();
