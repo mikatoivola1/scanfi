@@ -135,6 +135,18 @@ function buildLangSelect() {
 
 async function lookup(code) {
   $("errorBox").classList.add("hidden");
+
+  // Show loading state immediately
+  $("scannerView").classList.add("hidden");
+  $("productView").classList.remove("hidden");
+  $("productCard").innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;">
+      <div style="width:50px;height:50px;border:3px solid #38ada9;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <p style="margin-top:1rem;color:#636e72;">${code}</p>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+  `;
+
   try {
     const res = await fetch(`/api/product/${encodeURIComponent(code)}?lang=${lang}`);
     if (!res.ok) throw new Error("notfound");
@@ -142,6 +154,10 @@ async function lookup(code) {
     renderProduct(data);
   } catch (e) {
     showError(UI[lang].notfound);
+    // Go back to scanner view on error
+    $("productView").classList.add("hidden");
+    $("scannerView").classList.remove("hidden");
+    showStartButton();
   }
 }
 
@@ -325,19 +341,6 @@ function showStartButton() {
   });
 }
 
-function showScannedCode(code) {
-  // Put the code in the manual input field and trigger lookup
-  const extractedCode = extractCode(code);
-  $("manualCode").value = extractedCode;
-  // Call lookup after a small delay
-  setTimeout(function() {
-    var codeToLookup = $("manualCode").value.trim();
-    if (codeToLookup) {
-      lookup(codeToLookup);
-    }
-  }, 100);
-}
-
 function startScanner() {
   const readerEl = $("reader");
   readerEl.innerHTML = "";
@@ -352,20 +355,15 @@ function startScanner() {
   scanner = new Html5Qrcode("reader");
 
   const config = {
-    fps: 15,
-    qrbox: { width: 250, height: 250 },
+    fps: 25,
+    qrbox: { width: 280, height: 280 },
     formatsToSupport: [
       Html5QrcodeSupportedFormats.QR_CODE,
       Html5QrcodeSupportedFormats.EAN_13,
       Html5QrcodeSupportedFormats.EAN_8,
       Html5QrcodeSupportedFormats.UPC_A,
       Html5QrcodeSupportedFormats.UPC_E
-    ],
-    // Use native BarcodeDetector API if available (much faster)
-    experimentalFeatures: {
-      useBarCodeDetectorIfSupported: true
-    },
-    rememberLastUsedCamera: true
+    ]
   };
 
   scanner.start(
@@ -373,9 +371,11 @@ function startScanner() {
     config,
     function onScanSuccess(decodedText) {
       if (navigator.vibrate) navigator.vibrate(100);
-      stopScanner();
       var code = extractCode(decodedText);
+      // Show code immediately
       $("manualCode").value = code;
+      // Stop scanner and lookup in parallel
+      stopScanner();
       lookup(code);
     },
     function onScanFailure(error) {
