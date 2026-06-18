@@ -1,0 +1,53 @@
+Subject: API Access Request - ScanFi Product Information App
+
+Dear Kesko Developer Portal Team,
+
+I am writing to request API access to the K-Ruoka product database for integration with ScanFi, a multilingual food product information application.
+
+ABOUT SCANFI
+
+ScanFi is a progressive web app that helps consumers access food product information by scanning barcodes. The app automatically detects the user's language and displays product details, allergens, nutritional information, and dietary information in their preferred language.
+
+The app is designed for Finland's diverse population, including tourists, expats, and residents who may not read Finnish fluently. It helps users make informed food choices regardless of language barriers.
+
+Live demo: https://scanfi.onrender.com
+
+WHY K-RUOKA API ACCESS
+
+Currently, ScanFi uses Open Food Facts as its primary data source. However, Finnish products often have incomplete data in this international database. K-Ruoka has the most comprehensive and accurate data for Finnish grocery products.
+
+With API access, ScanFi could:
+- Display complete product information for Finnish groceries
+- Show accurate allergen warnings (critical for user safety)
+- Provide nutritional data in the user's language
+- Reduce the need for users to leave the app
+
+TECHNICAL REQUIREMENTS
+
+We would need read-only access to:
+- Product search by barcode (EAN/GTIN)
+- Product name, brand, description
+- Ingredients list
+- Allergen information
+- Nutritional values
+- Product images (optional)
+
+BENEFITS TO KESKO
+
+- Increased K-Ruoka brand visibility among international users in Finland
+- Positions Kesko as accessible and inclusive
+- Potential to drive traffic to K-Ruoka stores
+- Positive association with consumer safety (allergen awareness)
+
+I would be happy to discuss usage terms, rate limits, attribution requirements, or any other conditions for API access.
+
+Thank you for considering this request. I look forward to your response.
+
+Best regards,
+
+[Your Name]
+[Your Email]
+[Your Phone]
+
+---
+ScanFi Project: https://github.com/mikatoivola1/scanfi
