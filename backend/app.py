@@ -304,13 +304,17 @@ async def fetch_from_open_food_facts(barcode: str, target_lang: str) -> dict | N
         return None
 
 
-async def fetch_from_edamam(barcode: str, target_lang: str) -> dict | None:
-    """Fetch product nutrition from Edamam Food Database API."""
+async def fetch_from_edamam(barcode: str, target_lang: str, product_name: str = None) -> dict | None:
+    """Fetch product nutrition from Edamam Food Database API.
+
+    First tries UPC lookup, then falls back to text search by product name.
+    """
     if not EDAMAM_APP_ID or not EDAMAM_APP_KEY:
         return None
 
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
+            # Try UPC lookup first
             response = await client.get(
                 EDAMAM_API_URL,
                 params={
@@ -320,6 +324,19 @@ async def fetch_from_edamam(barcode: str, target_lang: str) -> dict | None:
                     "nutrition-type": "logging"
                 }
             )
+
+            # If UPC not found and we have a product name, try text search
+            if response.status_code == 404 and product_name:
+                # Search by product name (e.g., "milk chocolate" for "maitosuklaa")
+                response = await client.get(
+                    EDAMAM_API_URL,
+                    params={
+                        "app_id": EDAMAM_APP_ID,
+                        "app_key": EDAMAM_APP_KEY,
+                        "ingr": product_name,
+                        "nutrition-type": "logging"
+                    }
+                )
 
             if response.status_code != 200:
                 return None
@@ -426,8 +443,11 @@ async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
 
 
 @app.get("/api/product/{code}/enrich")
-async def enrich_product(code: str, lang: str = Query(DEFAULT_LANG)):
-    """Enrich product data from Edamam API (backup source)."""
+async def enrich_product(code: str, lang: str = Query(DEFAULT_LANG), name: str = Query(None)):
+    """Enrich product data from Edamam API (backup source).
+
+    Tries UPC lookup first, then falls back to text search by product name.
+    """
     lang = normalize_lang(lang)
     code = code.strip()
 
@@ -440,12 +460,20 @@ async def enrich_product(code: str, lang: str = Query(DEFAULT_LANG)):
     if len(clean_code) < 8:
         raise HTTPException(status_code=400, detail="Invalid barcode")
 
-    edamam_data = await fetch_from_edamam(clean_code, lang)
+    # Get product name for text search fallback
+    product_name = name
+    if not product_name:
+        # Fetch from OFF to get the name
+        off_product = await fetch_from_open_food_facts(clean_code, "en")
+        if off_product:
+            product_name = off_product.get("originalName") or off_product.get("name")
+
+    edamam_data = await fetch_from_edamam(clean_code, lang, product_name)
 
     if edamam_data:
         return JSONResponse(edamam_data)
 
-    raise HTTPException(status_code=404, detail="No additional data found")
+    raise HTTPException(status_code=404, detail="No additional data found in Edamam database")
 
 
 # Serve the PWA

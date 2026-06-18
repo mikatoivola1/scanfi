@@ -331,7 +331,9 @@ async function enrichProduct() {
   }
 
   try {
-    const res = await fetch(`/api/product/${encodeURIComponent(currentProduct.gtin)}/enrich?lang=${lang}`);
+    // Pass product name for text search fallback
+    const productName = currentProduct.originalName || currentProduct.name || '';
+    const res = await fetch(`/api/product/${encodeURIComponent(currentProduct.gtin)}/enrich?lang=${lang}&name=${encodeURIComponent(productName)}`);
     if (!res.ok) throw new Error("No additional data");
 
     const edamamData = await res.json();
