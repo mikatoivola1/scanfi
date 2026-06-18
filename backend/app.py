@@ -157,15 +157,15 @@ OFF_ALLERGEN_MAP = {
 
 def detect_source_language(product: dict) -> str:
     """Detect the language of the product data."""
+    # Check countries first - Finnish products are usually in Finnish
+    countries = product.get("countries_tags", [])
+    if "en:finland" in countries:
+        return "fi"
+
     # Check if product has a primary language set
     lc = product.get("lc", "")
     if lc in SUPPORTED_LANGS:
         return lc
-
-    # Check countries - Finnish products likely in Finnish
-    countries = product.get("countries_tags", [])
-    if "en:finland" in countries:
-        return "fi"
 
     # Default to English
     return "en"
@@ -411,6 +411,12 @@ def is_data_weak(product: dict) -> bool:
     return not (has_nutrition and has_ingredients and has_name)
 
 
+def build_kruoka_url(barcode: str, product_name: str = "") -> str:
+    """Build a K-Ruoka search URL for the product."""
+    # K-Ruoka search URL with barcode
+    return f"https://www.k-ruoka.fi/haku?q={barcode}"
+
+
 @app.get("/api/health")
 def health():
     edamam_configured = bool(EDAMAM_APP_ID and EDAMAM_APP_KEY)
@@ -437,6 +443,9 @@ async def get_product(code: str, lang: str = Query(DEFAULT_LANG)):
             # Add flag indicating if data is weak (for "Get more info" button)
             off_product["dataWeak"] = is_data_weak(off_product)
             off_product["edamamAvailable"] = bool(EDAMAM_APP_ID and EDAMAM_APP_KEY)
+            # Add K-Ruoka link for Finnish products with weak data
+            if off_product["dataWeak"]:
+                off_product["kRuokaUrl"] = build_kruoka_url(clean_code)
             return JSONResponse(off_product)
 
     raise HTTPException(status_code=404, detail=f"No product found for code '{code}'")
@@ -475,6 +484,21 @@ async def enrich_product(code: str, lang: str = Query(DEFAULT_LANG), name: str =
 
     raise HTTPException(status_code=404, detail="No additional data found in Edamam database")
 
+
+# Add no-cache headers for code files to prevent stale cache issues
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        path = request.url.path
+        if path.endswith(('.html', '.js', '.css')) or path == '/':
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        return response
+
+app.add_middleware(NoCacheMiddleware)
 
 # Serve the PWA
 if FRONTEND_DIR.exists():
