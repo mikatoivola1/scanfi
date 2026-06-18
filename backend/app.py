@@ -13,6 +13,10 @@ import json
 import os
 from pathlib import Path
 
+# Load .env file if present
+from dotenv import load_dotenv
+load_dotenv()
+
 import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
