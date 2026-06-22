@@ -25,12 +25,26 @@ With API access, ScanFi could:
 TECHNICAL REQUIREMENTS
 
 We would need read-only access to:
-- Product search by barcode (EAN/GTIN)
-- Product name, brand, description
-- Ingredients list
-- Allergen information
-- Nutritional values
-- Product images (optional)
+
+1. Product Information (by EAN/GTIN barcode):
+   - Product name, brand, description
+   - Ingredients list
+   - Allergen information
+   - Nutritional values
+   - Product images (optional)
+
+2. In-Store Product Location ("hyllypaikka"):
+   - Shelf/aisle identifier by EAN + Store ID
+   - Shelf level (height position)
+   - Store-specific product positioning
+
+The shelf location feature would enable powerful in-store navigation:
+   - Help users quickly locate products in unfamiliar stores
+   - Assist users with mobility challenges or time constraints
+   - Reduce the need to ask staff for directions
+   - Create a seamless bridge between digital shopping lists and physical stores
+
+We understand this feature may be available in select stores only, and we would display availability accordingly.
 
 BENEFITS TO KESKO
 
@@ -38,6 +52,19 @@ BENEFITS TO KESKO
 - Positions Kesko as accessible and inclusive
 - Potential to drive traffic to K-Ruoka stores
 - Positive association with consumer safety (allergen awareness)
+- In-store navigation improves customer experience and reduces staff queries
+- Differentiates K-Ruoka as a tech-forward, tourist-friendly grocery option
+- Creates loyalty among expat communities who rely on consistent shopping experience
+
+USE CASE EXAMPLE
+
+A tourist visiting Finland wants to buy lactose-free milk. With ScanFi + K-Ruoka API:
+1. They search for "lactose-free milk" in their language
+2. ScanFi shows products available at their selected K-store
+3. The app guides them to Aisle 3, Shelf 2, middle level
+4. They scan the barcode to confirm allergens before purchasing
+
+This creates a frictionless, language-independent shopping experience that positions K-Ruoka as the most accessible grocery chain in Finland.
 
 I would be happy to discuss usage terms, rate limits, attribution requirements, or any other conditions for API access.
 

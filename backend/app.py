@@ -60,6 +60,9 @@ EDAMAM_APP_ID = os.environ.get("EDAMAM_APP_ID", "")
 EDAMAM_APP_KEY = os.environ.get("EDAMAM_APP_KEY", "")
 EDAMAM_API_URL = "https://api.edamam.com/api/food-database/v2/parser"
 
+# Environment detection (set ENVIRONMENT=development on dev server)
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "production")
+
 app = FastAPI(title="ScanFi API", version="0.1.0")
 
 
@@ -420,7 +423,12 @@ def build_kruoka_url(barcode: str, product_name: str = "") -> str:
 @app.get("/api/health")
 def health():
     edamam_configured = bool(EDAMAM_APP_ID and EDAMAM_APP_KEY)
-    return {"status": "ok", "languages": SUPPORTED_LANGS, "edamam_available": edamam_configured}
+    return {
+        "status": "ok",
+        "environment": ENVIRONMENT,
+        "languages": SUPPORTED_LANGS,
+        "edamam_available": edamam_configured
+    }
 
 
 @app.get("/api/products")

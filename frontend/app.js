@@ -1,4 +1,4 @@
-/* ScanFi PWA — front-end logic. v2.3
+/* ScanFi PWA — front-end logic. v2.4
  * Zero-friction: no login, no app store. Auto-detects phone language,
  * scans a shelf QR code, and renders localized product + allergen info.
  */
@@ -118,7 +118,7 @@ function applyUiStrings() {
   $("manualBtn").textContent = t.lookup;
   $("manualCode").placeholder = t.manual;
   $("backLabel").textContent = t.back;
-  $("footer").textContent = t.footer + " · v2.2";
+  $("footer").textContent = t.footer + " · v2.4";
   document.documentElement.lang = lang;
 }
 
@@ -478,3 +478,36 @@ if (deepLink) {
 //     reg.update();
 //   }).catch(() => {});
 // }
+
+// Environment banner - shows orange banner on development environment
+(async function checkEnvironment() {
+  try {
+    const res = await fetch('/api/health');
+    const data = await res.json();
+    if (data.environment === 'development') {
+      const banner = document.createElement('div');
+      banner.id = 'dev-banner';
+      banner.textContent = 'DEVELOPMENT';
+      banner.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: #fff;
+        text-align: center;
+        padding: 6px;
+        font-weight: bold;
+        font-size: 12px;
+        letter-spacing: 2px;
+        z-index: 9999;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      `;
+      document.body.prepend(banner);
+      // Add padding to body so content isn't hidden behind banner
+      document.body.style.paddingTop = '28px';
+    }
+  } catch (e) {
+    // Silently fail - production won't have the banner
+  }
+})();

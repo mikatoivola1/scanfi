@@ -1,10 +1,43 @@
 # ScanFi Project - Claude Code Memory
 
-## CRITICAL: DEPLOYMENT
-- **Production URL**: https://scanfi.onrender.com
-- **QR Code**: Points to production, NOT localhost
-- **ALL changes must be committed and pushed to GitHub** - Render auto-deploys from master
-- **NEVER test with localhost** - user tests on phone via QR code to production
+## CRITICAL: DEPLOYMENT (Dev/Prod Separation)
+
+### Two Environments
+| Environment | URL | Branch | QR Code |
+|-------------|-----|--------|---------|
+| **Production** | https://scanfi.onrender.com | `master` | Green (`qr-production.png`) |
+| **Development** | https://scanfi-dev.onrender.com | `develop` | Orange (`qr-development.png`) |
+
+### Workflow
+1. **Develop on `develop` branch** - auto-deploys to dev environment
+2. **Test with orange QR** - dev environment shows orange "DEVELOPMENT" banner
+3. **When approved, merge to `master`** - auto-deploys to production
+4. **Users use green QR** - production has no banner
+
+### Git Commands
+```bash
+# Feature development
+git checkout develop
+git checkout -b feature/my-feature
+# ... make changes ...
+git add . && git commit -m "Add feature"
+git push origin feature/my-feature
+git checkout develop && git merge feature/my-feature
+git push origin develop  # Auto-deploys to DEV
+
+# Promote to production (after testing)
+git checkout master
+git merge develop
+git push origin master  # Auto-deploys to PROD
+```
+
+### Environment Detection
+- Backend: `ENVIRONMENT` env var (set to `development` on dev server)
+- Frontend: Checks `/api/health` and shows orange banner if `environment === 'development'`
+
+### NEVER
+- Push untested code directly to `master`
+- Test on localhost (always use dev environment)
 
 ## CRITICAL: DO NOT MODIFY
 The barcode scanner is working and fragile. **NEVER change these settings:**
@@ -61,14 +94,15 @@ const config = {
 
 ## Testing
 - Fazer chocolate barcode: `6416453020337` (has weak data, good for testing K-Ruoka button)
-- Server: `python -m uvicorn app:app --host 0.0.0.0 --port 8000`
-- **App QR code**: `frontend/codes/app-qr.png` - points to `http://192.168.22.101:8000`
-- **IMPORTANT**: If server IP changes, regenerate QR with:
-  ```python
-  import qrcode
-  qr = qrcode.make('http://NEW_IP:8000')
-  qr.save('C:/scanfi/frontend/codes/app-qr.png')
-  ```
+- Local server: `python -m uvicorn app:app --host 0.0.0.0 --port 8000`
+
+### QR Codes
+| QR Code | File | URL | Use For |
+|---------|------|-----|---------|
+| Production (green) | `frontend/codes/qr-production.png` | scanfi.onrender.com | End users |
+| Development (orange) | `frontend/codes/qr-development.png` | scanfi-dev.onrender.com | Testing |
+
+**Regenerate QR codes**: `python scripts/generate_qr_codes.py`
 
 ## Service Worker
 - **DISABLED during development** - no caching issues
@@ -89,7 +123,10 @@ Review this section before making changes.
 - THINK before acting
 - ASK clarifying questions early, not after hours of work
 - When user says something doesn't work, first verify WHERE they're testing
+- **Always develop on `develop` branch first**
+- **Test on dev environment before merging to master**
 - All changes must be committed + pushed to see effect
+- Development URL: https://scanfi-dev.onrender.com
 - Production URL: https://scanfi.onrender.com
 
 ## Automated Testing
@@ -99,15 +136,16 @@ Before asking user to test, run these checks:
 # 1. Check syntax
 node --check frontend/app.js
 
-# 2. Test API responses
-curl -s "https://scanfi.onrender.com/api/product/6416453020337?lang=fi" | python -c "import sys,json; d=json.load(sys.stdin); print('FI:', d.get('name'))"
-curl -s "https://scanfi.onrender.com/api/product/6416453020337?lang=en" | python -c "import sys,json; d=json.load(sys.stdin); print('EN:', d.get('name'))"
+# 2. Test DEV environment (after pushing to develop)
+curl -s "https://scanfi-dev.onrender.com/api/health" | python -c "import sys,json; d=json.load(sys.stdin); print('ENV:', d.get('environment'))"
+curl -s "https://scanfi-dev.onrender.com/api/product/6416453020337?lang=fi" | python -c "import sys,json; d=json.load(sys.stdin); print('FI:', d.get('name'))"
 
-# 3. Check frontend is serving latest version
-curl -s "https://scanfi.onrender.com/app.js" | head -1
+# 3. Check version deployed
+curl -s "https://scanfi-dev.onrender.com/app.js" | grep "v2\."
 
-# 4. Verify deployment completed (check for version string)
+# 4. Test PROD environment (after merging to master)
+curl -s "https://scanfi.onrender.com/api/health" | python -c "import sys,json; d=json.load(sys.stdin); print('ENV:', d.get('environment'))"
 curl -s "https://scanfi.onrender.com/app.js" | grep "v2\."
 ```
 
-Run these AFTER pushing, BEFORE asking user to test.
+Run DEV checks after pushing to `develop`, PROD checks after merging to `master`.
